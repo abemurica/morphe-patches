@@ -17,6 +17,7 @@ import java.util.Map;
 import app.morphe.extension.music.patches.lyrics.Lyrics;
 import app.morphe.extension.music.patches.lyrics.LyricsLine;
 import app.morphe.extension.music.patches.lyrics.Word;
+import app.morphe.extension.shared.Logger;
 
 public final class LyricsFileParser {
 
@@ -27,6 +28,12 @@ public final class LyricsFileParser {
 
     @Nullable
     public static Lyrics parse(@Nullable String yaml, String providerName) {
+        return parse(yaml, providerName, null);
+    }
+
+    @Nullable
+    public static Lyrics parse(@Nullable String yaml, String providerName,
+            @Nullable String sourceUrl) {
         if (yaml == null || yaml.isEmpty()) {
             return null;
         }
@@ -83,29 +90,30 @@ public final class LyricsFileParser {
         if (instrumental) {
             return parsedLines.isEmpty()
                     ? Lyrics.NOT_FOUND
-                    : fileLyrics(parsedLines, providerName, true, creditLinesOut, yaml);
+                    : fileLyrics(parsedLines, providerName, true, creditLinesOut, yaml, sourceUrl);
         }
 
         boolean synced = parsedLines.stream()
                 .anyMatch(line -> line.startTimeMs() != LyricsLine.NO_TIME);
         if (synced) {
-            return fileLyrics(parsedLines, providerName, true, creditLinesOut, yaml);
+            return fileLyrics(parsedLines, providerName, true, creditLinesOut, yaml, sourceUrl);
         }
 
         Object plainObject = top.get("plain");
         if (plainObject instanceof String) {
             List<LyricsLine> plain = LrcParser.parsePlain((String) plainObject);
             if (!plain.isEmpty()) {
-                return fileLyrics(plain, providerName, false, creditLinesOut, yaml);
+                return fileLyrics(plain, providerName, false, creditLinesOut, yaml, sourceUrl);
             }
         }
         return Lyrics.NOT_FOUND;
     }
 
     private static Lyrics fileLyrics(List<LyricsLine> lines, String providerName, boolean synced,
-                                     @Nullable List<String> creditLines, String yaml) {
+                                     @Nullable List<String> creditLines, String yaml,
+                                     @Nullable String sourceUrl) {
         return new Lyrics(lines, providerName, synced, null, null, null,
-                creditLines, yaml, "lyricsfile.yaml", null);
+                creditLines, yaml, "lyricsfile.yaml", sourceUrl);
     }
 
     @Nullable
@@ -139,6 +147,7 @@ public final class LyricsFileParser {
                 if (wordText.isEmpty()) {
                     continue;
                 }
+                //noinspection SizeReplaceableByIsEmpty
                 if (builder.length() > 0) {
                     builder.append(' ');
                 }
@@ -147,22 +156,7 @@ public final class LyricsFileParser {
             text = builder.toString();
         }
 
-        if (words.size() > 1) {
-            for (int i = 0; i < words.size() - 1; i++) {
-                Word word = words.get(i);
-                if (word.endMs() == LyricsLine.NO_TIME) {
-                    words.set(i, new Word(word.startMs(), words.get(i + 1).startMs(), word.text()));
-                }
-            }
-        }
-        if (!words.isEmpty()) {
-            int last = words.size() - 1;
-            Word lastWord = words.get(last);
-            if (lastWord.endMs() == LyricsLine.NO_TIME) {
-                words.set(last, new Word(lastWord.startMs(),
-                        lastWord.startMs() + 800, lastWord.text()));
-            }
-        }
+        LrcParser.inferMissingWordEnds(words, 800);
 
         return new LyricsLine(asLong(map.get("start_ms")), text, words);
     }
@@ -177,7 +171,8 @@ public final class LyricsFileParser {
         if (value instanceof String) {
             try {
                 return Long.parseLong(((String) value).trim());
-            } catch (NumberFormatException ignored) {
+            } catch (NumberFormatException ex) {
+                Logger.printDebug(() -> "Could not parse long value in LyricsFileParser", ex);
                 return LyricsLine.NO_TIME;
             }
         }
@@ -189,6 +184,9 @@ public final class LyricsFileParser {
     }
 
     private static Object readValue(List<String> lines, Cursor cursor, int indent) {
+        if (cursor.index >= lines.size()) {
+            return new LinkedHashMap<>();
+        }
         if (isSequenceItem(lines.get(cursor.index), indent)) {
             return readSequence(lines, cursor, indent);
         }
@@ -206,13 +204,14 @@ public final class LyricsFileParser {
             if (indentOf(line) != indent || !line.trim().startsWith("- ")) {
                 break;
             }
-            String rest = line.trim().substring(2).strip();
+            String rest = line.trim().substring(2).trim();
             if (rest.isEmpty()) {
                 cursor.index++;
+                if (cursor.index >= lines.size()) {
+                    break;
+                }
                 sequence.add(readValue(lines, cursor, indent + 2));
             } else {
-                // The first mapping key sits inline after "- "; rewrite it as a
-                // regular mapping line so the shared reader can consume it.
                 lines.set(cursor.index, " ".repeat(indent + 2) + rest);
                 sequence.add(readMapping(lines, cursor, indent + 2));
             }
@@ -233,7 +232,7 @@ public final class LyricsFileParser {
                 continue;
             }
             String key = line.substring(indent, colon).trim();
-            String value = line.substring(colon + 1).strip();
+            String value = line.substring(colon + 1).trim();
             cursor.index++;
 
             if (value.isEmpty()) {
@@ -272,6 +271,7 @@ public final class LyricsFileParser {
             if (indentOf(line) <= indent) {
                 break;
             }
+            //noinspection SizeReplaceableByIsEmpty
             if (builder.length() > 0) {
                 builder.append('\n');
             }
@@ -283,7 +283,7 @@ public final class LyricsFileParser {
     }
 
     private static String unquote(String value) {
-        String string = value.strip();
+        String string = value.trim();
         if (string.length() >= 2 && string.startsWith("'") && string.endsWith("'")) {
             return string.substring(1, string.length() - 1).replace("''", "'");
         }

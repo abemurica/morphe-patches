@@ -17,6 +17,11 @@ Second \"item\" text"</string>
 
 -->
 <resources>
+  <!-- layout.theme.splashAnimationPatch -->
+  <string name="morphe_splash_screen_animation_style_title">Animácia spustenia</string>
+  <string name="morphe_splash_screen_animation_style_entry_1">Vypnutý</string>
+  <string name="morphe_splash_screen_animation_style_entry_2">Farebná</string>
+  <string name="morphe_splash_screen_animation_style_entry_3">Monochrómny</string>
   <!-- misc.initialization.initializationPatch -->
   <string name="morphe_restart_first_run">Reštartujte aplikáciu, aby sa dokončila konfigurácia</string>
   <!-- layout.branding.baseCustomBrandingPatch -->
@@ -131,6 +136,13 @@ Ak sa chcete prihlásiť, stlačte tlačidlo Pokračovať"</string>
   <string name="morphe_oauth2_connection_failure_auth_error">Nie je možné prihlásiť sa do VR: %s</string>
   <string name="morphe_oauth2_toast_reset">Odhlásené z Android VR</string>
   <string name="morphe_oauth2_toast_invalid">Neplatný token prihlásenia VR, skúste sa znova prihlásiť do VR</string>
+  <!-- misc.medianotification.mediaNotificationControlsPatch -->
+  <string name="morphe_notification_media_screen_title">Ovládacie prvky médií v oznámení</string>
+  <string name="morphe_notification_media_screen_summary">Prispôsobte si ovládacie prvky prehrávania zobrazené na uzamykacej obrazovke a v paneli s upozorneniami.</string>
+  <string name="morphe_hide_notification_media_prev_next_title">Skryť predchádzajúce a nasledujúce tlačidlá.</string>
+  <string name="morphe_hide_notification_media_prev_next_summary">Skryje predchádzajúce a nasledujúce tlačidlá v mediálnom upozornení, na uzamykacej obrazovke a v ovládacích prvkoch slúchadiel.</string>
+  <string name="morphe_disable_notification_media_seekbar_title">Zakázať posuvník.</string>
+  <string name="morphe_disable_notification_media_seekbar_summary">Zabraňuje pretiahnutiu posuvníka na uzamykacej obrazovke a v paneli s upozorneniami.</string>
   <!-- misc.quic.disableQUICProtocolPatch -->
   <string name="morphe_disable_quic_protocol_title">Zakázať protokol QUIC</string>
   <!-- misc.audio.drc.disableDRCAudioPatch  -->
@@ -235,12 +247,11 @@ Ak ju neskôr vypnete, odporúda sa vymazať dáta aplikácie, aby ste predišli
   <string name="morphe_ryd_failure_generic">Počet \'Nepáči sa mi\' nie je dostupný (%s)</string>
   <!-- Video likes have been set to hidden by the video uploader. -->
   <string name="morphe_ryd_video_likes_hidden_by_video_owner">Skryté vlastníkom</string>
+  <string name="morphe_ryd_accessibility_dislike_count">Toto video sa mi nepáči, spolu s %s ďalšími ľuďmi</string>
+  <string name="morphe_ryd_accessibility_dislike_percentage">Toto video sa mi nepáči, %s hlasov je negatívnych</string>
   <string name="morphe_ryd_enabled_title">Povoliť Return YouTube Dislike</string>
   <string name="morphe_ryd_dislike_percentage_title">Zobraziť počet \'Nepáči sa mi\' v percentách</string>
   <string name="morphe_ryd_dislike_percentage_summary">Zobrazuje počet \'Nepáči sa mi\' ako percentuálny podiel počtu \'Páči sa mi\' namiesto čísla</string>
-  <!-- Translations should match the language used in 'morphe_sb_enable_compact_skip_button'. -->
-  <string name="morphe_ryd_compact_layout_title">Použiť kompaktné tlačidlo \'Páči sa mi\'</string>
-  <string name="morphe_ryd_compact_layout_summary">Zmenšuje šírku tlačidla \'Páči sa mi\' pre úsporu miesta</string>
   <string name="morphe_ryd_estimated_like_title">Zobraziť odhadovaný počet \'Páči sa mi\'</string>
   <string name="morphe_ryd_estimated_like_summary">Zobrazuje odhadovaný počet \'Páči sa mi\' na videách, kde autor zakázal hodnotenie</string>
   <string name="morphe_ryd_toast_on_connection_error_title">Zobrazovať upozornenia o chybách pripojenia</string>

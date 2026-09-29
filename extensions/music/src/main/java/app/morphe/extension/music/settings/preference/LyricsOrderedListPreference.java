@@ -19,6 +19,7 @@ import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 import app.morphe.extension.music.settings.Settings;
+import app.morphe.extension.shared.Logger;
 import app.morphe.extension.shared.settings.StringSetting;
 import app.morphe.extension.shared.theme.ThemeUtils;
 import app.morphe.extension.shared.ui.Dim;
@@ -48,8 +50,9 @@ public final class LyricsOrderedListPreference extends Preference {
 
     /** Canonical provider ids, in the default priority order, shown in the list. */
     private static final List<String> PROVIDER_ORDER = Arrays.asList(
-            "YTMusic", "Captions", "LRCLIB", "QQ", "NetEase", "KuGou", "Luna", "bLyrics", "BiniLyrics",
-            "Unison", "AMLL", "Lyricify", "Apple", "Musixmatch", "Spotify", "Deezer");
+            "YTMusic", "Captions", "LRCLIB", "QQ", "NetEase", "KuGou", "Luna",
+            "PetitLyrics", "bLyrics", "BiniLyrics", "Unison", "SimpMusic", "AMLL",
+            "LunaBeat", "Lyricify", "Apple", "Musixmatch", "Spotify", "Deezer");
 
     /** Friendlier labels for display; ids not present here are shown verbatim. */
     private static final Map<String, String> PROVIDER_LABELS = new HashMap<>();
@@ -119,17 +122,20 @@ public final class LyricsOrderedListPreference extends Preference {
         if (!isEnabled()) {
             return;
         }
-        new AlertDialog.Builder(getContext())
-                .setTitle(str("morphe_music_lyrics_source_reset_title"))
-                .setMessage(str("morphe_music_lyrics_source_reset_message"))
-                .setPositiveButton(android.R.string.ok, (d, w) -> {
-                    Settings.LYRICS_SOURCE.resetToDefault();
-                    loadItems();
-                    updateSummary();
-                    rebuildRows();
-                })
-                .setNegativeButton(android.R.string.cancel, null)
-                .show();
+        try {
+            new AlertDialog.Builder(getContext())
+                    .setTitle(str("morphe_music_lyrics_source_reset_title"))
+                    .setMessage(str("morphe_music_lyrics_source_reset_message"))
+                    .setPositiveButton(android.R.string.ok, (d, w) -> {
+                        Settings.LYRICS_SOURCE.resetToDefault();
+                        loadItems();
+                        updateSummary();
+                        rebuildRows();
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show();
+        } catch (WindowManager.BadTokenException ignored) {
+        }
     }
 
     @Override
@@ -140,12 +146,27 @@ public final class LyricsOrderedListPreference extends Preference {
         try {
             loadItems();
             updateSummary();
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+            Logger.printDebug(() -> "onAttachedToHierarchy failure", ex);
         }
     }
 
     @Override
     public View getView(View convertView, ViewGroup parent) {
+        try {
+            return buildView(convertView, parent);
+        } catch (Throwable ignored) {
+            // Bound from the settings list, where an exception would take the whole
+            // screen down. The sibling entry point guards itself the same way.
+            LinearLayout fallback = new LinearLayout(getContext());
+            fallback.setOrientation(LinearLayout.VERTICAL);
+            fallback.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            return fallback;
+        }
+    }
+
+    private View buildView(View convertView, ViewGroup parent) {
         loadItems();
         Context context = getContext();
         final int fg = ThemeUtils.getAppForegroundColor();
@@ -160,16 +181,6 @@ public final class LyricsOrderedListPreference extends Preference {
                 onClick();
             }
         });
-
-        CharSequence title = getTitle();
-        if (!TextUtils.isEmpty(title)) {
-            TextView titleView = new TextView(context);
-            titleView.setText(title);
-            titleView.setTextSize(16);
-            titleView.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
-            titleView.setTextColor(fg);
-            root.addView(titleView);
-        }
 
         CharSequence summary = getSummary();
         if (!TextUtils.isEmpty(summary)) {
@@ -313,9 +324,10 @@ public final class LyricsOrderedListPreference extends Preference {
                     case DragEvent.ACTION_DRAG_LOCATION: {
                         final int target = (int) v.getTag();
                         if (target != dragIndex && target >= 0) {
-                            reorder(dragIndex, target);
+                            final int from = dragIndex;
+                            reorder(from, target);
+                            moveRow(from, from < target ? target - 1 : target);
                             dragIndex = target;
-                            rebuildRows();
                         }
                         return true;
                     }
@@ -339,8 +351,25 @@ public final class LyricsOrderedListPreference extends Preference {
         return row;
     }
 
+    private void moveRow(int from, int to) {
+        if (rowsContainer == null || rowsContainer.getChildCount() != items.size()) {
+            rebuildRows();
+            return;
+        }
+        if (from == to || from < 0 || from >= rowsContainer.getChildCount()) {
+            return;
+        }
+        View row = rowsContainer.getChildAt(from);
+        rowsContainer.removeViewAt(from);
+        rowsContainer.addView(row, Math.max(0, Math.min(to, rowsContainer.getChildCount())));
+        for (int i = 0; i < rowsContainer.getChildCount(); i++) {
+            rowsContainer.getChildAt(i).setTag(i);
+        }
+    }
+
     private void reorder(int from, int to) {
-        if (from == to || from < 0 || to < 0) {
+        if (from == to || from < 0 || to < 0
+                || from >= items.size() || to >= items.size()) {
             return;
         }
         Item moved = items.remove(from);
@@ -379,6 +408,12 @@ public final class LyricsOrderedListPreference extends Preference {
             }
         }
 
+        if (disableTokenlessItems()) {
+            saveItems();
+        }
+    }
+
+    private boolean disableTokenlessItems() {
         boolean changed = false;
         for (Item item : items) {
             if (item.enabled && isTokenRequired(item.id)) {
@@ -386,19 +421,14 @@ public final class LyricsOrderedListPreference extends Preference {
                 changed = true;
             }
         }
-        if (changed) {
-            saveItems();
-        }
+        return changed;
     }
 
     private void saveItems() {
-        for (Item item : items) {
-            if (item.enabled && isTokenRequired(item.id)) {
-                item.enabled = false;
-            }
-        }
+        disableTokenlessItems();
         StringBuilder sb = new StringBuilder();
         for (Item item : items) {
+            //noinspection SizeReplaceableByIsEmpty
             if (sb.length() > 0) {
                 sb.append(',');
             }

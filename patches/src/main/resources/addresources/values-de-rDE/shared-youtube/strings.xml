@@ -17,6 +17,11 @@ Second \"item\" text"</string>
 
 -->
 <resources>
+  <!-- layout.theme.splashAnimationPatch -->
+  <string name="morphe_splash_screen_animation_style_title">Startanimation</string>
+  <string name="morphe_splash_screen_animation_style_entry_1">Deaktiviert</string>
+  <string name="morphe_splash_screen_animation_style_entry_2">Farbe</string>
+  <string name="morphe_splash_screen_animation_style_entry_3">Einfarbig</string>
   <!-- misc.initialization.initializationPatch -->
   <string name="morphe_restart_first_run">Starte die App neu, um die Einrichtung abzuschließen</string>
   <!-- layout.branding.baseCustomBrandingPatch -->
@@ -131,6 +136,13 @@ Um sich anzumelden, drücken Sie unten auf \"Weiter\""</string>
   <string name="morphe_oauth2_connection_failure_auth_error">Eine Anmeldung bei VR ist nicht möglich: %s</string>
   <string name="morphe_oauth2_toast_reset">Von Android VR abgemeldet</string>
   <string name="morphe_oauth2_toast_invalid">Ungültiger VR-Anmelde-Token, melden Sie sich erneut in VR an</string>
+  <!-- misc.medianotification.mediaNotificationControlsPatch -->
+  <string name="morphe_notification_media_screen_title">Mediensteuerung in Benachrichtigungen</string>
+  <string name="morphe_notification_media_screen_summary">Passen Sie die Wiedergabesteuerungen auf Ihrem Sperrbildschirm und im Benachrichtigungsfeld an.</string>
+  <string name="morphe_hide_notification_media_prev_next_title">Vorherige &amp; nächste Schaltflächen ausblenden</string>
+  <string name="morphe_hide_notification_media_prev_next_summary">Blendet Zurück- und Weiter-Schaltflächen in Medienbenachrichtigung, Sperrbildschirm und Kopfhörersteuerung aus.</string>
+  <string name="morphe_disable_notification_media_seekbar_title">Videofortschrittsbalken deaktivieren</string>
+  <string name="morphe_disable_notification_media_seekbar_summary">Verhindert das Verschieben der Fortschrittsleiste auf dem Sperrbildschirm und im Benachrichtigungsfeld.</string>
   <!-- misc.quic.disableQUICProtocolPatch -->
   <string name="morphe_disable_quic_protocol_title">QUIC-Protokoll deaktivieren </string>
   <!-- misc.audio.drc.disableDRCAudioPatch  -->
@@ -235,12 +247,11 @@ Sollte die Funktion später deaktiviert werden, wird empfohlen, die App-Daten zu
   <string name="morphe_ryd_failure_generic">Dislikes sind nicht verfügbar (%s)</string>
   <!-- Video likes have been set to hidden by the video uploader. -->
   <string name="morphe_ryd_video_likes_hidden_by_video_owner">Vom Ersteller deaktiviert</string>
+  <string name="morphe_ryd_accessibility_dislike_count">Zusammen mit %s anderen Personen gefällt mir dieses Video nicht.</string>
+  <string name="morphe_ryd_accessibility_dislike_percentage">Dieses Video gefällt mir nicht: %s der Stimmen sind Dislikes.</string>
   <string name="morphe_ryd_enabled_title">Return YouTube Dislike aktivieren</string>
   <string name="morphe_ryd_dislike_percentage_title">Dislikes prozentual anzeigen</string>
   <string name="morphe_ryd_dislike_percentage_summary">Zeigt anstelle eines Zahlenwerts die Dislikes prozentual zur Anzahl der Likes an</string>
-  <!-- Translations should match the language used in 'morphe_sb_enable_compact_skip_button'. -->
-  <string name="morphe_ryd_compact_layout_title">Schaltfläche „Like“ in kompakter Darstellung verwenden</string>
-  <string name="morphe_ryd_compact_layout_summary">Verringert die Breite der „Like“-Schaltfläche, um Platz zu sparen</string>
   <string name="morphe_ryd_estimated_like_title">Geschätzte \"Gefällt mir\"-Angaben anzeigen</string>
   <string name="morphe_ryd_estimated_like_summary">Zeigt bei Videos mit deaktivierten Likes eine geschätzte Anzahl an</string>
   <string name="morphe_ryd_toast_on_connection_error_title">Warnungen zu Verbindungfehlern anzeigen</string>

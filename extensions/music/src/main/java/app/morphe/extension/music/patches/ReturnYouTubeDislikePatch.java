@@ -1,6 +1,6 @@
 /*
  * Copyright 2026 Morphe.
- * https://github.com/MorpheApp/morphe-patches
+ * https://github.com/MorpheApp/morphe-patches/pull/3107
  *
  * Original hard forked code:
  * https://github.com/ReVanced/revanced-patches/commit/724e6d61b2ecd868c1a9a37d465a688e83a74799
@@ -17,10 +17,14 @@ import android.text.Spanned;
 
 import androidx.annotation.Nullable;
 
+import com.facebook.litho.ComponentHost;
+
 import app.morphe.extension.music.settings.Settings;
 import app.morphe.extension.shared.Logger;
 import app.morphe.extension.shared.Utils;
+import app.morphe.extension.shared.patches.components.ContextInterface;
 import app.morphe.extension.shared.returnyoutubedislike.ReturnYouTubeDislike;
+import app.morphe.extension.shared.returnyoutubedislike.ReturnYouTubeDislikeButtons;
 import app.morphe.extension.shared.returnyoutubedislike.requests.ReturnYouTubeDislikeAPI;
 
 /**
@@ -31,15 +35,39 @@ import app.morphe.extension.shared.returnyoutubedislike.requests.ReturnYouTubeDi
 @SuppressWarnings("unused")
 public class ReturnYouTubeDislikePatch {
 
-    static {
-        ReturnYouTubeDislike.setIsMusic(true);
-    }
-
     /**
      * RYD data for the current track on screen.
      */
     @Nullable
     private static volatile ReturnYouTubeDislike currentVideoData;
+
+    /**
+     * Read once, since the width of every layout node passes through {@link #onYogaSetWidth}.
+     */
+    private static final boolean RYD_ENABLED = Settings.RYD_ENABLED.get();
+
+    static {
+        ReturnYouTubeDislikeButtons.setVideoDataSource(() -> currentVideoData);
+        ReturnYouTubeDislikeButtons.setSegmentedButtonSizes(24, 14, 12);
+    }
+
+    /**
+     * Injection point.
+     */
+    public static void onYogaSetWidth(long nodePointer, float width) {
+        if (RYD_ENABLED) {
+            ReturnYouTubeDislikeButtons.onYogaSetWidth(nodePointer, width);
+        }
+    }
+
+    /**
+     * Injection point.
+     */
+    @Nullable
+    public static CharSequence onComponentHostContentDescription(ComponentHost host,
+                                                                 @Nullable CharSequence description) {
+        return ReturnYouTubeDislikeButtons.onComponentHostContentDescription(host, description);
+    }
 
     /**
      * Injection point.
@@ -53,13 +81,13 @@ public class ReturnYouTubeDislikePatch {
      * @param original Original char sequence was created or reused by Litho.
      * @return The original char sequence (if nothing should change), or a replacement char sequence that contains dislikes.
      */
-    public static CharSequence onLithoTextLoaded(Object conversionContext, CharSequence original) {
+    public static CharSequence onLithoTextLoaded(ContextInterface contextInterface, CharSequence original) {
         try {
             if (!Settings.RYD_ENABLED.get()) {
                 return original;
             }
 
-            if (!conversionContext.toString().contains("segmented_like_dislike_button.")) {
+            if (!Utils.contains(contextInterface.patch_getPathBuilder(), "segmented_like_dislike_button.")) {
                 return original;
             }
             ReturnYouTubeDislike videoData = currentVideoData;
@@ -69,7 +97,7 @@ public class ReturnYouTubeDislikePatch {
             if (!(original instanceof Spanned)) {
                 original = new SpannableString(original);
             }
-            return videoData.getDislikesSpanForRegularVideo((Spanned) original, true, false);
+            return videoData.getDislikesSpanForRegularVideo((Spanned) original);
         } catch (Exception ex) {
             Logger.printException(() -> "onLithoTextLoaded failure", ex);
         }
@@ -96,6 +124,7 @@ public class ReturnYouTubeDislikePatch {
                 return;
             }
             currentVideoData = ReturnYouTubeDislike.getFetchForVideoId(videoId);
+            Utils.runOnMainThread(ReturnYouTubeDislikeButtons::refreshIconButtonCounts);
         } catch (Exception ex) {
             Logger.printException(() -> "newVideoLoaded failure", ex);
         }
@@ -138,7 +167,10 @@ public class ReturnYouTubeDislikePatch {
                 if (v.endpoint.equals(endpoint)) {
                     // YT Music (unlike regular YouTube) invokes this click callback off the main thread,
                     // but ReturnYouTubeDislike.sendVote() requires the main thread to safely update UI state.
-                    Utils.runOnMainThread(() -> videoData.sendVote(v));
+                    Utils.runOnMainThread(() -> {
+                        videoData.sendVote(v);
+                        ReturnYouTubeDislikeButtons.invalidateIconButtonCounts();
+                    });
                     return;
                 }
             }

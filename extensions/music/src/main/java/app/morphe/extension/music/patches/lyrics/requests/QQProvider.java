@@ -75,22 +75,31 @@ public final class QQProvider implements LyricsProvider {
 
     @Nullable
     @Override
-    public Lyrics fetch(TrackInfo track) throws Exception {
+    public FetchResult fetch(TrackInfo track) throws Exception {
         String keyword = track.title() + " " + track.artist();
         JSONObject song = searchBest(keyword, track);
         if (song == null || !song.has("id")) {
             return null;
         }
-        return fetchFromSong(song);
+        Lyrics lyrics = fetchFromSong(song);
+        if (lyrics == null) {
+            return null;
+        }
+        return FetchResult.of(lyrics,
+                song.optString("title", ""),
+                singers(song),
+                song.optInt("interval", 0),
+                track);
     }
 
     @Override
-    public List<Lyrics> fetchCandidates(TrackInfo track) throws Exception {
+    public List<Lyrics.ScoredLyrics> fetchCandidates(TrackInfo track) throws Exception {
         String keyword = track.title() + " " + track.artist();
         List<JSONObject> candidates = searchAll(keyword, track);
-        List<Lyrics> results = new ArrayList<>();
+
+        List<Lyrics.ScoredLyrics> scored = new ArrayList<>();
         for (JSONObject song : candidates) {
-            if (results.size() >= LyricsRequests.MAX_CANDIDATES) {
+            if (scored.size() >= LyricsRequests.MAX_CANDIDATES) {
                 break;
             }
             if (song == null || !song.has("id")) {
@@ -99,13 +108,17 @@ public final class QQProvider implements LyricsProvider {
             try {
                 Lyrics lyrics = fetchFromSong(song);
                 if (lyrics != null) {
-                    results.add(lyrics);
+                    int score = LyricsRequests.scoreLyricsCandidate(
+                            song.optString("title", ""), singers(song),
+                            song.optInt("interval", 0), lyrics, track);
+                    scored.add(new Lyrics.ScoredLyrics(score, lyrics));
                 }
             } catch (Exception ex) {
                 Logger.printDebug(() -> "Could not fetch QQ lyrics for a song", ex);
             }
         }
-        return results;
+
+        return Lyrics.sortScoredByScore(scored);
     }
 
     @Nullable
@@ -137,7 +150,7 @@ public final class QQProvider implements LyricsProvider {
         }
 
         if (qrcOffsetMs != 0) {
-            lines = applyOffset(lines, qrcOffsetMs);
+            lines = LyricsRequests.applyOffset(lines, qrcOffsetMs);
         }
 
         if (lines.isEmpty()) {
@@ -225,15 +238,28 @@ public final class QQProvider implements LyricsProvider {
                 scored.add(item);
             }
         }
-        scored.sort((a, b) -> scoreCandidate(b, track) - scoreCandidate(a, track));
-        return scored;
+        return softGateSort(scored, track);
     }
 
     private static int scoreCandidate(JSONObject item, TrackInfo track) {
         String title = item.optString("title", "");
         String artist = singers(item);
+        JSONObject album = item.optJSONObject("album");
+        String albumName = album != null ? album.optString("name", "") : "";
         return LyricsRequests.scoreTrackCandidate(title, artist,
-                item.optInt("interval", 0), track);
+                item.optInt("interval", 0), albumName, track);
+    }
+
+    private static List<JSONObject> softGateSort(List<JSONObject> items, TrackInfo track) {
+        items.sort((a, b) -> scoreCandidate(b, track) - scoreCandidate(a, track));
+        List<JSONObject> passed = new ArrayList<>();
+        for (JSONObject item : items) {
+            if (scoreCandidate(item, track) >= LyricsRequests.SOFT_MIN) {
+                passed.add(item);
+            }
+        }
+        return passed.isEmpty() && !items.isEmpty()
+                ? List.of(items.get(0)) : passed;
     }
 
     private static String singers(JSONObject item) {
@@ -249,6 +275,7 @@ public final class QQProvider implements LyricsProvider {
             }
             String name = singer.optString("name", "");
             if (!name.isEmpty()) {
+                //noinspection SizeReplaceableByIsEmpty
                 if (builder.length() > 0) {
                     builder.append('/');
                 }
@@ -308,7 +335,8 @@ public final class QQProvider implements LyricsProvider {
     private static String base64Text(String text) {
         try {
             return Base64.encodeToString(text.getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP);
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+            Logger.printDebug(() -> "Base64 encoding failed", ex);
             return "";
         }
     }
@@ -335,7 +363,8 @@ public final class QQProvider implements LyricsProvider {
             if (decoded.length > 0) {
                 return new String(decoded, StandardCharsets.UTF_8);
             }
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+            Logger.printDebug(() -> "Base64 decode QQ lyric payload failed", ex);
         }
         return raw;
     }
@@ -348,7 +377,8 @@ public final class QQProvider implements LyricsProvider {
             builder.append(text, last, matcher.start());
             try {
                 builder.append((char) Integer.parseInt(Objects.requireNonNull(matcher.group(1))));
-            } catch (NumberFormatException ignored) {
+            } catch (NumberFormatException ex) {
+                Logger.printDebug(() -> "Decode XML entity numeric value failed", ex);
                 builder.append(matcher.group(0));
             }
             last = matcher.end();
@@ -381,7 +411,8 @@ public final class QQProvider implements LyricsProvider {
             if ("offset".equalsIgnoreCase(key)) {
                 try {
                     offsetOut[0] = Long.parseLong(value);
-                } catch (NumberFormatException ignored) {
+                } catch (NumberFormatException ex) {
+                    Logger.printDebug(() -> "Parse QRC offset failed", ex);
                 }
                 continue;
             }
@@ -393,27 +424,6 @@ public final class QQProvider implements LyricsProvider {
             }
         }
         return metadata;
-    }
-
-    private static List<LyricsLine> applyOffset(List<LyricsLine> lines, long offsetMs) {
-        List<LyricsLine> adjusted = new ArrayList<>(lines.size());
-        for (LyricsLine line : lines) {
-            long newStart = line.startTimeMs() + offsetMs;
-            long newEnd = line.endTimeMs() != LyricsLine.NO_TIME
-                    ? line.endTimeMs() + offsetMs : LyricsLine.NO_TIME;
-            List<Word> adjustedWords = new ArrayList<>(line.words().size());
-            for (Word word : line.words()) {
-                adjustedWords.add(new Word(
-                        word.startMs() + offsetMs,
-                        word.endMs() + offsetMs,
-                        word.text(),
-                        word.romaji(),
-                        word.endsWithSpace()));
-            }
-            adjusted.add(new LyricsLine(newStart, newEnd, line.text(), adjustedWords,
-                    line.agentId(), line.isDuet(), line.isBG(), line.songPart()));
-        }
-        return adjusted;
     }
 
     private static List<LyricsLine> parseQrcFormat(String text) {
@@ -482,7 +492,6 @@ public final class QQProvider implements LyricsProvider {
             if (words.isEmpty() && !lineContent.isEmpty()) {
                 String stripped = QRC_WORD.matcher(lineContent).replaceAll("").trim();
                 if (!stripped.isEmpty()) {
-                    words.add(new Word(lineStart, lineEnd, stripped));
                     full.append(stripped);
                 }
             }
@@ -491,7 +500,7 @@ public final class QQProvider implements LyricsProvider {
             if (fullText.isEmpty()) {
                 continue;
             }
-            lines.add(new LyricsLine(lineStart, fullText, words));
+            lines.add(new LyricsLine(lineStart, lineEnd, fullText, words));
         }
 
         lines.sort(Comparator.comparingLong(LyricsLine::startTimeMs));

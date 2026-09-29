@@ -41,6 +41,14 @@ public record Lyrics(List<LyricsLine> lines, String providerName, boolean synced
                      @Nullable String formatType,
                      @Nullable String sourceUrl) {
 
+    public record ScoredLyrics(int score, Lyrics lyrics) {
+    }
+
+    public static List<ScoredLyrics> sortScoredByScore(List<ScoredLyrics> scored) {
+        scored.sort((a, b) -> b.score - a.score);
+        return scored;
+    }
+
     /** Marker for a track that was looked up successfully but has no lyrics anywhere. */
     public static final Lyrics NOT_FOUND = new Lyrics(Collections.emptyList(), "", false,
             null, null, null, null, null, null, null);
@@ -52,28 +60,6 @@ public record Lyrics(List<LyricsLine> lines, String providerName, boolean synced
         romanization = (romanization == null) ? null : Collections.unmodifiableList(romanization);
         translations = (translations == null) ? null : unmodifiableTranslations(translations);
         romanizations = (romanizations == null) ? null : unmodifiableTranslations(romanizations);
-    }
-
-    public Lyrics(List<LyricsLine> lines, String providerName, boolean synced,
-                  @Nullable List<LyricsLine> romanization,
-                  @Nullable Map<String, List<LyricsLine>> translations) {
-        this(lines, providerName, synced, romanization, translations, null, null, null, null, null);
-    }
-
-    public Lyrics(List<LyricsLine> lines, String providerName, boolean synced,
-                  @Nullable List<LyricsLine> romanization,
-                  @Nullable Map<String, List<LyricsLine>> translations,
-                  @Nullable Map<String, List<LyricsLine>> romanizations) {
-        this(lines, providerName, synced, romanization, translations, romanizations, null, null, null, null);
-    }
-
-    public Lyrics(List<LyricsLine> lines, String providerName, boolean synced) {
-        this(lines, providerName, synced, null, null, null, null, null, null, null);
-    }
-
-    public Lyrics(List<LyricsLine> lines, String providerName, boolean synced,
-                  @Nullable List<LyricsLine> romanization) {
-        this(lines, providerName, synced, romanization, null, null, null, null, null, null);
     }
 
     private static Map<String, List<LyricsLine>> unmodifiableTranslations(

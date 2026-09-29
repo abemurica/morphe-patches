@@ -17,6 +17,11 @@ Second \"item\" text"</string>
 
 -->
 <resources>
+  <!-- layout.theme.splashAnimationPatch -->
+  <string name="morphe_splash_screen_animation_style_title">Startanimation</string>
+  <string name="morphe_splash_screen_animation_style_entry_1">Inaktiverad</string>
+  <string name="morphe_splash_screen_animation_style_entry_2">Färg</string>
+  <string name="morphe_splash_screen_animation_style_entry_3">Monokrom</string>
   <!-- misc.initialization.initializationPatch -->
   <string name="morphe_restart_first_run">Starta om för att slutföra konfigureringen</string>
   <!-- layout.branding.baseCustomBrandingPatch -->
@@ -131,6 +136,13 @@ Tryck på Fortsätt nedan för att logga in"</string>
   <string name="morphe_oauth2_connection_failure_auth_error">Det går inte att logga in i VR: %s</string>
   <string name="morphe_oauth2_toast_reset">Utloggad från Android VR</string>
   <string name="morphe_oauth2_toast_invalid">Ogiltig VR-inloggningstoken. Försök logga in i VR igen</string>
+  <!-- misc.medianotification.mediaNotificationControlsPatch -->
+  <string name="morphe_notification_media_screen_title">Mediekontroller för avisering</string>
+  <string name="morphe_notification_media_screen_summary">Anpassa de uppspelningskontroller som visas på låsskärmen och i aviseringspanelen</string>
+  <string name="morphe_hide_notification_media_prev_next_title">Dölj föregående och nästa knappar</string>
+  <string name="morphe_hide_notification_media_prev_next_summary">Döljer knapparna Föregående och Nästa i medieaviseringen, på låsskärmen och för hörlursstyrning</string>
+  <string name="morphe_disable_notification_media_seekbar_title">Inaktivera sökfältet</string>
+  <string name="morphe_disable_notification_media_seekbar_summary">Förhindrar att sökreglaget kan dras på låsskärmen och i aviseringspanelen</string>
   <!-- misc.quic.disableQUICProtocolPatch -->
   <string name="morphe_disable_quic_protocol_title">Inaktivera QUIC-protokoll</string>
   <!-- misc.audio.drc.disableDRCAudioPatch  -->
@@ -235,12 +247,11 @@ Om du senare inaktiverar det rekommenderar vi att rensa appens data för att fö
   <string name="morphe_ryd_failure_generic">Ogilla-markeringar är inte tillgängliga (%s)</string>
   <!-- Video likes have been set to hidden by the video uploader. -->
   <string name="morphe_ryd_video_likes_hidden_by_video_owner">Dolda av ägaren</string>
+  <string name="morphe_ryd_accessibility_dislike_count">Ogilla den här videon, tillsammans med %s andra personer</string>
+  <string name="morphe_ryd_accessibility_dislike_percentage">Ogilla den här videon, %s av rösterna är ogillanden</string>
   <string name="morphe_ryd_enabled_title">Aktivera Return YouTube Dislike</string>
   <string name="morphe_ryd_dislike_percentage_title">Visa ogilla-markeringar som procentandel</string>
   <string name="morphe_ryd_dislike_percentage_summary">Visa ogilla-markeringar som procentandelen av antalet gilla-markeringar istället för som ett tal</string>
-  <!-- Translations should match the language used in 'morphe_sb_enable_compact_skip_button'. -->
-  <string name="morphe_ryd_compact_layout_title">Använd kompakt Gilla-knapp</string>
-  <string name="morphe_ryd_compact_layout_summary">Minskar bredden på Gilla-knappen för att spara utrymme</string>
   <string name="morphe_ryd_estimated_like_title">Visa uppskattade gilla-markeringar</string>
   <string name="morphe_ryd_estimated_like_summary">Visar ett uppskattat antal gilla-markeringar för videor där kreatören har inaktiverat gilla-markeringar</string>
   <string name="morphe_ryd_toast_on_connection_error_title">Visa meddelanden om anslutningsfel</string>

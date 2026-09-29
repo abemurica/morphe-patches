@@ -17,6 +17,11 @@ Second \"item\" text"</string>
 
 -->
 <resources>
+  <!-- layout.theme.splashAnimationPatch -->
+  <string name="morphe_splash_screen_animation_style_title">啟動動畫</string>
+  <string name="morphe_splash_screen_animation_style_entry_1">已停用</string>
+  <string name="morphe_splash_screen_animation_style_entry_2">顏色</string>
+  <string name="morphe_splash_screen_animation_style_entry_3">單色</string>
   <!-- misc.initialization.initializationPatch -->
   <string name="morphe_restart_first_run">重新啟動以完成設定</string>
   <!-- layout.branding.baseCustomBrandingPatch -->
@@ -131,6 +136,13 @@ Second \"item\" text"</string>
   <string name="morphe_oauth2_connection_failure_auth_error">無法登入 VR：%s</string>
   <string name="morphe_oauth2_toast_reset">已登出 Android VR</string>
   <string name="morphe_oauth2_toast_invalid">VR 登入憑證無效，請再次登入 VR</string>
+  <!-- misc.medianotification.mediaNotificationControlsPatch -->
+  <string name="morphe_notification_media_screen_title">通知媒體控制項</string>
+  <string name="morphe_notification_media_screen_summary">自訂鎖定畫面和通知面板上顯示的播放控制項</string>
+  <string name="morphe_hide_notification_media_prev_next_title">隱藏上一首 &amp; 下一首按鈕</string>
+  <string name="morphe_hide_notification_media_prev_next_summary">隱藏媒體通知、鎖定畫面和耳機控制項中的上一首與下一首按鈕</string>
+  <string name="morphe_disable_notification_media_seekbar_title">停用進度列</string>
+  <string name="morphe_disable_notification_media_seekbar_summary">防止在鎖定畫面和通知面板上拖曳進度列</string>
   <!-- misc.quic.disableQUICProtocolPatch -->
   <string name="morphe_disable_quic_protocol_title">停用 QUIC 協定</string>
   <!-- misc.audio.drc.disableDRCAudioPatch  -->
@@ -235,12 +247,11 @@ Second \"item\" text"</string>
   <string name="morphe_ryd_failure_generic">無法顯示不喜歡人數 (%s)</string>
   <!-- Video likes have been set to hidden by the video uploader. -->
   <string name="morphe_ryd_video_likes_hidden_by_video_owner">已由擁有者隱藏</string>
+  <string name="morphe_ryd_accessibility_dislike_count">不喜歡這部影片，以及另外 %s 人</string>
+  <string name="morphe_ryd_accessibility_dislike_percentage">不喜歡這部影片，%s 的票為不喜歡</string>
   <string name="morphe_ryd_enabled_title">啟用 Return YouTube Dislike</string>
   <string name="morphe_ryd_dislike_percentage_title">以百分比顯示不喜歡人數</string>
   <string name="morphe_ryd_dislike_percentage_summary">以不喜歡人數的百分比取代數量顯示</string>
-  <!-- Translations should match the language used in 'morphe_sb_enable_compact_skip_button'. -->
-  <string name="morphe_ryd_compact_layout_title">使用精簡的「讚」按鈕</string>
-  <string name="morphe_ryd_compact_layout_summary">縮小「讚」按鈕的寬度以節省空間</string>
   <string name="morphe_ryd_estimated_like_title">顯示預估喜歡人數</string>
   <string name="morphe_ryd_estimated_like_summary">在創作者停用「讚」功能時，顯示預估的「讚」人數</string>
   <string name="morphe_ryd_toast_on_connection_error_title">顯示連線錯誤警示</string>

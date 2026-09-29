@@ -17,6 +17,11 @@ Second \"item\" text"</string>
 
 -->
 <resources>
+  <!-- layout.theme.splashAnimationPatch -->
+  <string name="morphe_splash_screen_animation_style_title">تأثير حركة بدء التشغيل</string>
+  <string name="morphe_splash_screen_animation_style_entry_1">معطّل</string>
+  <string name="morphe_splash_screen_animation_style_entry_2">اللون</string>
+  <string name="morphe_splash_screen_animation_style_entry_3">أحادية اللون</string>
   <!-- misc.initialization.initializationPatch -->
   <string name="morphe_restart_first_run">إعادة التشغيل لإنهاء الإعداد</string>
   <!-- layout.branding.baseCustomBrandingPatch -->
@@ -131,6 +136,13 @@ Second \"item\" text"</string>
   <string name="morphe_oauth2_connection_failure_auth_error">فشل تسجيل الدخول إلى VR: %s</string>
   <string name="morphe_oauth2_toast_reset">تم تسجيل خروج Android VR</string>
   <string name="morphe_oauth2_toast_invalid">رمز تسجيل الدخول إلى VR غير صالح، حاول تسجيل الدخول مرة أخرى إلى VR</string>
+  <!-- misc.medianotification.mediaNotificationControlsPatch -->
+  <string name="morphe_notification_media_screen_title">عناصر التحكم في وسائط الإشعارات</string>
+  <string name="morphe_notification_media_screen_summary">تخصيص عناصر التحكم في التشغيل المعروضة على شاشة القفل ولوحة الإشعارات</string>
+  <string name="morphe_hide_notification_media_prev_next_title">إخفاء أزرار السابق &amp; التالي</string>
+  <string name="morphe_hide_notification_media_prev_next_summary">يخفي أزرار \'السابق\' و \'التالي\' في إشعار الوسائط، شاشة القفل، وعناصر تحكم سماعة الرأس</string>
+  <string name="morphe_disable_notification_media_seekbar_title">تعطيل شريط التمرير</string>
+  <string name="morphe_disable_notification_media_seekbar_summary">يمنع سحب شريط التقدم على شاشة القفل ولوحة الإشعارات</string>
   <!-- misc.quic.disableQUICProtocolPatch -->
   <string name="morphe_disable_quic_protocol_title">تعطيل بروتوكول QUIC</string>
   <!-- misc.audio.drc.disableDRCAudioPatch  -->
@@ -235,12 +247,11 @@ Second \"item\" text"</string>
   <string name="morphe_ryd_failure_generic">لم يعجبني غير متاح (%s)</string>
   <!-- Video likes have been set to hidden by the video uploader. -->
   <string name="morphe_ryd_video_likes_hidden_by_video_owner">مخفي بواسطة المالك</string>
+  <string name="morphe_ryd_accessibility_dislike_count">ضع علامة لم يعجبني على هذا الفيديو، إلى جانب %s من الأشخاص الآخرين</string>
+  <string name="morphe_ryd_accessibility_dislike_percentage">ضع علامة لم يعجني على هذا الفيديو، نسبة الأصوات غير المعجبة هي %s</string>
   <string name="morphe_ryd_enabled_title">تمكين استعادة عدد مرات لم يعجبني</string>
   <string name="morphe_ryd_dislike_percentage_title">عرض لم يعجبني كــ نسبة مئوية</string>
   <string name="morphe_ryd_dislike_percentage_summary">يعرض إحصائية لم يعجبني كنسبة مئوية من الإعجابات بدلًا من رقم</string>
-  <!-- Translations should match the language used in 'morphe_sb_enable_compact_skip_button'. -->
-  <string name="morphe_ryd_compact_layout_title">استخدام زر الإعجاب المصغّر</string>
-  <string name="morphe_ryd_compact_layout_summary">يقلل من عرض زر الإعجاب لتوفير المساحة</string>
   <string name="morphe_ryd_estimated_like_title">عرض الإعجابات المقدرة</string>
   <string name="morphe_ryd_estimated_like_summary">يعرض عددًا تقديريًا للإعجابات في الفيديوهات التي قام المنشئ بتعطيل الإعجابات فيها</string>
   <string name="morphe_ryd_toast_on_connection_error_title">عرض تنبيهات خطأ الاتصال</string>

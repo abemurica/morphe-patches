@@ -28,6 +28,7 @@ import app.morphe.extension.music.patches.lyrics.Lyrics;
 import app.morphe.extension.music.patches.lyrics.LyricsLine;
 import app.morphe.extension.music.patches.lyrics.LyricsMerge;
 import app.morphe.extension.music.patches.lyrics.Word;
+import app.morphe.extension.shared.Logger;
 
 /**
  * Parses Apple Music style TTML into lyric lines.
@@ -155,7 +156,8 @@ final class TtmlParser {
                 }
                 event = p.next();
             }
-        } catch (XmlPullParserException | IOException ignored) {
+        } catch (XmlPullParserException | IOException ex) {
+            Logger.printDebug(() -> "Could not parse TTML head metadata", ex);
         }
 
         return new HeadMetadata(songwriters, amllCredits, agentTypes, sidecarRoman, sidecarTrans);
@@ -242,13 +244,10 @@ final class TtmlParser {
                         final String agentId = getAttr(p, NS_TTM, "agent", "ttm:agent");
                         final long pBegin = noTiming ? 0 : parseTime(getAttr(p, null, "begin", "begin"));
                         final long pEnd = noTiming ? 0 : parseTime(getAttr(p, null, "end", "end"));
-                        final boolean hasTimeAttrs = !noTiming && (
-                                getAttr(p, null, "begin", "begin") != null
-                                || getAttr(p, null, "end", "end") != null);
 
-                        final ParsedLine pl = processPElement(p, pBegin, pEnd, hasTimeAttrs);
+                        final ParsedLine pl = processPElement(p, pBegin, pEnd);
 
-                        if (pl != null && !pl.text().isBlank()) {
+                        if (pl != null && !pl.text().trim().isEmpty()) {
                             final LyricsLine line = new LyricsLine(
                                     pl.begin(), pl.end(), pl.text(), pl.words(),
                                     agentId, false, false, divSongPart);
@@ -386,6 +385,7 @@ final class TtmlParser {
                     amllCreditLines.isEmpty() ? null : amllCreditLines,
                     agentNames);
         } catch (XmlPullParserException | IOException ex) {
+            Logger.printDebug(() -> "Could not parse TTML to lyrics", ex);
             return null;
         }
     }
@@ -442,7 +442,8 @@ final class TtmlParser {
         if (end == agentId.length()) return 0;
         try {
             return Integer.parseInt(agentId.substring(end));
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ex) {
+            Logger.printDebug(() -> "Could not extract agent number from ID: " + agentId, ex);
             return 0;
         }
     }
@@ -453,6 +454,9 @@ final class TtmlParser {
         int depth = 1;
         while (depth > 0) {
             final int event = p.next();
+            if (event == XmlPullParser.END_DOCUMENT) {
+                break;
+            }
             if (event == XmlPullParser.START_TAG) {
                 final String local = localName(p.getName());
                 if ("transliteration".equals(local)) {
@@ -474,6 +478,9 @@ final class TtmlParser {
         int depth = 1;
         while (depth > 0) {
             final int event = p.next();
+            if (event == XmlPullParser.END_DOCUMENT) {
+                break;
+            }
             if (event == XmlPullParser.START_TAG) {
                 final String local = localName(p.getName());
                 if ("text".equals(local)) {
@@ -503,6 +510,9 @@ final class TtmlParser {
         int depth = 1;
         while (depth > 0) {
             final int event = p.next();
+            if (event == XmlPullParser.END_DOCUMENT) {
+                break;
+            }
             if (event == XmlPullParser.START_TAG) {
                 final String local = localName(p.getName());
                 if ("span".equals(local)) {
@@ -540,9 +550,12 @@ final class TtmlParser {
             throws XmlPullParserException, IOException {
         int depth = 1;
         int eventCount = 0;
-        while (depth > 0 && eventCount < 20) {
+        while (depth > 0 && eventCount < 100_000) {
             final int event = p.next();
             eventCount++;
+            if (event == XmlPullParser.END_DOCUMENT) {
+                break;
+            }
 
             if (event == XmlPullParser.START_TAG) {
                 final String local = localName(p.getName());
@@ -568,6 +581,9 @@ final class TtmlParser {
         int depth = 1;
         while (depth > 0) {
             final int event = p.next();
+            if (event == XmlPullParser.END_DOCUMENT) {
+                break;
+            }
             if (event == XmlPullParser.START_TAG) {
                 final String local = localName(p.getName());
                 if ("text".equals(local)) {
@@ -610,6 +626,9 @@ final class TtmlParser {
 
         while (depth > 0) {
             final int event = p.next();
+            if (event == XmlPullParser.END_DOCUMENT) {
+                break;
+            }
             if (event == XmlPullParser.START_TAG) {
                 depth++;
                 final String local = localName(p.getName());
@@ -771,8 +790,7 @@ final class TtmlParser {
                               @Nullable Map<String, String> bgInlineTranslations,
                               @Nullable Map<String, String> bgInlineRomanizations) {}
 
-    private static ParsedLine processPElement(XmlPullParser p, long pBegin, long pEnd,
-            boolean hasTimeAttrs)
+    private static ParsedLine processPElement(XmlPullParser p, long pBegin, long pEnd)
             throws XmlPullParserException, IOException {
 
         final List<Word> words = new ArrayList<>();
@@ -826,6 +844,9 @@ final class TtmlParser {
 
         while (depth > 0) {
             final int event = p.next();
+            if (event == XmlPullParser.END_DOCUMENT) {
+                break;
+            }
             if (event == XmlPullParser.START_TAG) {
                 depth++;
                 final String local = localName(p.getName());
@@ -954,9 +975,11 @@ final class TtmlParser {
                             }
                             StringBuilder rRoma = new StringBuilder();
                             for (RomajiSyllable rs : rubyTags) {
+                                //noinspection SizeReplaceableByIsEmpty
                                 if (rRoma.length() > 0) rRoma.append(' ');
                                 rRoma.append(rs.text());
                             }
+                            //noinspection SizeReplaceableByIsEmpty
                             String romaji = rRoma.length() > 0 ? rRoma.toString() : null;
 
                             fullText.append(baseText);
@@ -1055,7 +1078,7 @@ final class TtmlParser {
         }
 
         final String lineText = normalizeText(fullText.toString());
-        if (lineText.isBlank()) {
+        if (lineText.trim().isEmpty()) {
             return null;
         }
 
@@ -1084,10 +1107,6 @@ final class TtmlParser {
             effectiveEnd = LyricsLine.NO_TIME;
         }
 
-        if (words.isEmpty() && hasTimeAttrs && effectiveEnd > effectiveBegin) {
-            words.add(new Word(effectiveBegin, effectiveEnd, lineText, null, false));
-        }
-
         if (!words.isEmpty()) {
             final Word first = words.get(0);
             if (first.text().startsWith(" ")) {
@@ -1103,9 +1122,10 @@ final class TtmlParser {
         }
 
         // Save final BG section
+        //noinspection SizeReplaceableByIsEmpty
         if (inBg && (!bgWords.isEmpty() || bgFullText.length() > 0)) {
             String bgText = normalizeText(bgFullText.toString());
-            if (!bgText.isBlank()) {
+            if (!bgText.trim().isEmpty()) {
                 bgText = bgText.replaceAll("^[(（]+", "").replaceAll("[)）]+$", "").trim();
                 stripBgWordParens(bgWords);
                 if (!bgText.isEmpty()) {
@@ -1214,7 +1234,7 @@ final class TtmlParser {
     }
 
     private static String buildLineRomaji(List<Word> words,
-            @Nullable List<RomajiSyllable> sidecar) {
+                                          @Nullable List<RomajiSyllable> sidecar) {
         final StringBuilder perWord = new StringBuilder();
         boolean hasPerWord = false;
         for (Word w : words) {
@@ -1227,10 +1247,12 @@ final class TtmlParser {
             for (Word w : words) {
                 String r = w.romaji();
                 if (r != null && !r.isEmpty()) {
+                    //noinspection SizeReplaceableByIsEmpty
                     if (perWord.length() > 0) perWord.append(' ');
                     perWord.append(r);
                 }
             }
+            //noinspection SizeReplaceableByIsEmpty
             if (perWord.length() > 0) {
                 return perWord.toString();
             }
@@ -1240,6 +1262,7 @@ final class TtmlParser {
             final StringBuilder sb = new StringBuilder();
             for (RomajiSyllable s : sidecar) {
                 if (s.text().isEmpty()) continue;
+                //noinspection SizeReplaceableByIsEmpty
                 if (sb.length() > 0) sb.append(' ');
                 sb.append(s.text());
             }
@@ -1287,6 +1310,7 @@ final class TtmlParser {
             final StringBuilder sb = new StringBuilder();
             for (Word w : alignedWords) {
                 if (w.romaji() != null && !w.romaji().isEmpty()) {
+                    //noinspection SizeReplaceableByIsEmpty
                     if (sb.length() > 0) sb.append(' ');
                     sb.append(w.romaji());
                 }
@@ -1366,6 +1390,9 @@ final class TtmlParser {
         int depth = 1;
         while (depth > 0) {
             final int event = p.next();
+            if (event == XmlPullParser.END_DOCUMENT) {
+                break;
+            }
             if (event == XmlPullParser.START_TAG) {
                 depth++;
             } else if (event == XmlPullParser.END_TAG) {
@@ -1385,6 +1412,9 @@ final class TtmlParser {
         int depth = 1;
         while (depth > 0) {
             final int event = p.next();
+            if (event == XmlPullParser.END_DOCUMENT) {
+                break;
+            }
             if (event == XmlPullParser.START_TAG) {
                 depth++;
             } else if (event == XmlPullParser.END_TAG) {
@@ -1431,7 +1461,8 @@ final class TtmlParser {
         // Fallback: bare decimal number treated as seconds
         try {
             return (long) (Double.parseDouble(trimmed) * 1000);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ex) {
+            Logger.printDebug(() -> "Could not parse TTML time string: " + trimmed, ex);
             return 0;
         }
     }

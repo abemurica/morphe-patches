@@ -22,6 +22,7 @@ import java.util.List;
 import app.morphe.extension.music.patches.lyrics.Lyrics;
 import app.morphe.extension.music.patches.lyrics.LyricsLine;
 import app.morphe.extension.music.patches.lyrics.TrackInfo;
+import app.morphe.extension.shared.Logger;
 import app.morphe.extension.shared.requests.Requester;
 
 /**
@@ -45,37 +46,37 @@ public final class LrcLibProvider implements LyricsProvider {
 
     @Nullable
     @Override
-    public Lyrics fetch(TrackInfo track) throws Exception {
+    public FetchResult fetch(TrackInfo track) throws Exception {
         // The exact endpoint matches on duration as well, which gives the best timings,
         // but it fails for any track whose duration differs from the database entry.
         Lyrics exact = fetchExact(track);
-        if (exact != null) {
-            return exact;
+        if (exact != null && exact != Lyrics.NOT_FOUND) {
+            return FetchResult.of(exact, track);
         }
-        return fetchSearch(track);
+        return FetchResult.of(fetchSearch(track), track);
     }
 
     @Override
-    public List<Lyrics> fetchCandidates(TrackInfo track) throws Exception {
-        List<Lyrics> results = new ArrayList<>();
+    public List<Lyrics.ScoredLyrics> fetchCandidates(TrackInfo track) throws Exception {
+        List<Lyrics.ScoredLyrics> scored = new ArrayList<>();
 
         // Exact match first
         Lyrics exact = fetchExact(track);
         if (exact != null) {
-            results.add(exact);
+            scored.add(new Lyrics.ScoredLyrics(LyricsRequests.scoreSingleResult(exact), exact));
         }
 
-        // Then search results, sorted by duration delta
+        // Then search results, sorted by combined score
         String url = BASE_URL + "search?track_name=" + LyricsRequests.encode(track.title())
                 + "&artist_name=" + LyricsRequests.encode(track.artist());
         HttpURLConnection connection = LyricsRequests.openConnection(url);
         if (connection.getResponseCode() != Requester.HTTP_STATUS_CODE_SUCCESS) {
-            return results;
+            return Lyrics.sortScoredByScore(scored);
         }
 
         JSONArray searchResults = Requester.parseJSONArray(connection);
         if (searchResults.length() == 0) {
-            return results;
+            return Lyrics.sortScoredByScore(scored);
         }
 
         List<JSONObject> candidates = new ArrayList<>();
@@ -87,21 +88,49 @@ public final class LrcLibProvider implements LyricsProvider {
         }
 
         candidates.sort((a, b) -> {
-            int deltaA = Math.abs(a.optInt("duration", 0) - track.durationSeconds());
-            int deltaB = Math.abs(b.optInt("duration", 0) - track.durationSeconds());
+            final int scoreA = scoreCandidate(a, track);
+            final int scoreB = scoreCandidate(b, track);
+            if (scoreA != scoreB) {
+                return scoreB - scoreA;
+            }
+            final int deltaA = Math.abs(a.optInt("duration", 0) - track.durationSeconds());
+            final int deltaB = Math.abs(b.optInt("duration", 0) - track.durationSeconds());
             return deltaA - deltaB;
         });
 
+        List<JSONObject> gated = new ArrayList<>();
         for (JSONObject candidate : candidates) {
-            if (results.size() >= LyricsRequests.MAX_CANDIDATES) {
+            if (scoreCandidate(candidate, track) >= LyricsRequests.SOFT_MIN) {
+                gated.add(candidate);
+            }
+        }
+        if (gated.isEmpty() && !candidates.isEmpty()) {
+            gated.add(candidates.get(0));
+        }
+
+        for (JSONObject candidate : gated) {
+            if (scored.size() >= LyricsRequests.MAX_CANDIDATES) {
                 break;
             }
             Lyrics lyrics = toLyrics(candidate);
             if (lyrics != null && !lyrics.isEmpty()) {
-                results.add(lyrics);
+                int score = LyricsRequests.scoreLyricsCandidate(
+                        candidate.optString("trackName", ""),
+                        candidate.optString("artistName", ""),
+                        candidate.optInt("duration", 0),
+                        lyrics, track);
+                scored.add(new Lyrics.ScoredLyrics(score, lyrics));
             }
         }
-        return results;
+
+        return Lyrics.sortScoredByScore(scored);
+    }
+
+    private static int scoreCandidate(JSONObject item, TrackInfo track) {
+        String title = item.optString("trackName", "");
+        String artist = item.optString("artistName", "");
+        return LyricsRequests.scoreTrackCandidate(title, artist,
+                item.optInt("duration", 0), track);
     }
 
     @Nullable
@@ -140,29 +169,32 @@ public final class LrcLibProvider implements LyricsProvider {
             return null;
         }
 
-        // Prefer the candidate closest in duration, since same titled tracks are common.
-        JSONObject best = null;
-        int bestDelta = Integer.MAX_VALUE;
+        Lyrics bestLyrics = null;
+        int bestCombined = -1;
         for (int i = 0; i < resultsLength; i++) {
             JSONObject candidate = results.optJSONObject(i);
             if (candidate == null) {
                 continue;
             }
-            if (track.durationSeconds() <= 0) {
-                best = candidate;
-                break;
-            }
-            int delta = Math.abs(candidate.optInt("duration", 0) - track.durationSeconds());
-            if (delta < bestDelta) {
-                bestDelta = delta;
-                best = candidate;
+            try {
+                Lyrics candidateLyrics = toLyrics(candidate);
+                if (candidateLyrics != null && candidateLyrics != Lyrics.NOT_FOUND) {
+                    int combined = LyricsRequests.scoreLyricsCandidate(
+                            candidate.optString("trackName", ""),
+                            candidate.optString("artistName", ""),
+                            candidate.optInt("duration", 0),
+                            candidateLyrics, track);
+                    int trackScore = combined - LyricsRequests.syncRank(candidateLyrics);
+                    if (trackScore >= LyricsRequests.SOFT_MIN && combined > bestCombined) {
+                        bestCombined = combined;
+                        bestLyrics = candidateLyrics;
+                    }
+                }
+            } catch (Exception ex) {
+                Logger.printDebug(() -> "Failed to process LrcLib candidate", ex);
             }
         }
-
-        if (best == null) {
-            return null;
-        }
-        return toLyrics(best);
+        return bestLyrics;
     }
 
     @Nullable
@@ -171,12 +203,15 @@ public final class LrcLibProvider implements LyricsProvider {
             return Lyrics.NOT_FOUND;
         }
 
+        final int id = response.optInt("id", -1);
+        final String sourceUrl = id > 0 ? "https://lrclib.net/tracks/" + id : null;
+
         String lyricsFile = LyricsRequests.optString(response, "lyricsFile");
         if (lyricsFile == null) {
             lyricsFile = LyricsRequests.optString(response, "lyricsfile");
         }
         if (lyricsFile != null) {
-            Lyrics fromFile = LyricsFileParser.parse(lyricsFile, name());
+            Lyrics fromFile = LyricsFileParser.parse(lyricsFile, name(), sourceUrl);
             if (fromFile != null && !fromFile.isEmpty()) {
                 return fromFile;
             }
@@ -188,7 +223,7 @@ public final class LrcLibProvider implements LyricsProvider {
             if (!result.lines.isEmpty()) {
                 return new Lyrics(result.lines, name(), true, null, null, null,
                         result.creditLines.isEmpty() ? null : result.creditLines,
-                        enhanced, "lrc", null);
+                        enhanced, "lrc", sourceUrl);
             }
         }
 
@@ -198,7 +233,7 @@ public final class LrcLibProvider implements LyricsProvider {
             if (!result.lines.isEmpty()) {
                 return new Lyrics(result.lines, name(), true, null, null, null,
                         result.creditLines.isEmpty() ? null : result.creditLines,
-                        synced, "lrc", null);
+                        synced, "lrc", sourceUrl);
             }
         }
 
@@ -206,7 +241,8 @@ public final class LrcLibProvider implements LyricsProvider {
         if (plain != null) {
             List<LyricsLine> lines = LrcParser.parsePlain(plain);
             if (!lines.isEmpty()) {
-                return new Lyrics(lines, name(), false, null, null, null, null, plain, "lrc", null);
+                return new Lyrics(lines, name(), false, null, null, null, null, plain, "lrc",
+                        sourceUrl);
             }
         }
 

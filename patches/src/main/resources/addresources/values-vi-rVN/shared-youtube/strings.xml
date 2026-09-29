@@ -17,6 +17,11 @@ Second \"item\" text"</string>
 
 -->
 <resources>
+  <!-- layout.theme.splashAnimationPatch -->
+  <string name="morphe_splash_screen_animation_style_title">Hoạt ảnh khởi động</string>
+  <string name="morphe_splash_screen_animation_style_entry_1">Tắt</string>
+  <string name="morphe_splash_screen_animation_style_entry_2">Màu</string>
+  <string name="morphe_splash_screen_animation_style_entry_3">Đơn sắc</string>
   <!-- misc.initialization.initializationPatch -->
   <string name="morphe_restart_first_run">Khởi động lại để hoàn tất thiết lập</string>
   <!-- layout.branding.baseCustomBrandingPatch -->
@@ -131,6 +136,13 @@ Bấm tiếp tục bên dưới để đăng nhập"</string>
   <string name="morphe_oauth2_connection_failure_auth_error">Không thể đăng nhập vào VR: %s</string>
   <string name="morphe_oauth2_toast_reset">Đã đăng xuất khỏi Android VR</string>
   <string name="morphe_oauth2_toast_invalid">Mã đăng nhập VR không hợp lệ, hãy thử đăng nhập lại vào VR</string>
+  <!-- misc.medianotification.mediaNotificationControlsPatch -->
+  <string name="morphe_notification_media_screen_title">Điều khiển phương tiện thông báo</string>
+  <string name="morphe_notification_media_screen_summary">Tùy chỉnh giao diện điều khiển phát nhạc/video hiển thị trên màn hình khóa và bảng thông báo</string>
+  <string name="morphe_hide_notification_media_prev_next_title">Ẩn các nút Trước &amp; Tiếp theo</string>
+  <string name="morphe_hide_notification_media_prev_next_summary">Ẩn các nút Trước và Tiếp theo trong thông báo phương tiện, màn hình khóa và điều khiển tai nghe</string>
+  <string name="morphe_disable_notification_media_seekbar_title">Tắt thanh trượt</string>
+  <string name="morphe_disable_notification_media_seekbar_summary">Ngăn không cho kéo thanh tiến trình trên màn hình khóa và bảng thông báo</string>
   <!-- misc.quic.disableQUICProtocolPatch -->
   <string name="morphe_disable_quic_protocol_title">Tắt giao thức QUIC</string>
   <!-- misc.audio.drc.disableDRCAudioPatch  -->
@@ -190,7 +202,7 @@ Tuy nhiên, một số dữ liệu người dùng cũng được ghi lại như 
   <string name="morphe_settings_menu_filter_screen_summary">Ẩn các mục trên màn hình cài đặt theo tên hiển thị</string>
   <string name="morphe_settings_menu_filter_picker_empty">Hãy mở màn hình cài đặt mặc định của ứng dụng ít nhất một lần để tạo danh sách</string>
   <!-- interaction.dialog.removeViewerDiscretionDialogPatch -->
-  <string name="morphe_remove_viewer_discretion_dialog_title">Loại bỏ hộp thoại cảnh báo trước khi xem</string>
+  <string name="morphe_remove_viewer_discretion_dialog_title">Ẩn hộp thoại cảnh báo nội dung</string>
   <string name="morphe_remove_viewer_discretion_dialog_summary">Tuỳ chọn này chỉ tự động đồng ý chứ không bỏ qua giới hạn về độ tuổi</string>
   <!-- misc.potoken.poTokenProviderPatch -->
   <string name="morphe_potoken_provider_screen_title">Nhà cung cấp PoToken</string>
@@ -235,12 +247,11 @@ Nếu muốn tắt tính năng này sau đó, bạn nên xóa dữ liệu ứng 
   <string name="morphe_ryd_failure_generic">Không thể hiện số lượt không thích (%s)</string>
   <!-- Video likes have been set to hidden by the video uploader. -->
   <string name="morphe_ryd_video_likes_hidden_by_video_owner">Đã bị chủ sở hữu ẩn</string>
+  <string name="morphe_ryd_accessibility_dislike_count">Không thích video này, cùng với %s người khác</string>
+  <string name="morphe_ryd_accessibility_dislike_percentage">Không thích video này, %s phiếu bầu là không thích</string>
   <string name="morphe_ryd_enabled_title">Bật Return YouTube Dislike</string>
   <string name="morphe_ryd_dislike_percentage_title">Hiện số lượt không thích dưới dạng phần trăm</string>
   <string name="morphe_ryd_dislike_percentage_summary">Hiển thị số lượt không thích dưới dạng phần trăm thay vì một con số</string>
-  <!-- Translations should match the language used in 'morphe_sb_enable_compact_skip_button'. -->
-  <string name="morphe_ryd_compact_layout_title">Dùng nút Thích thu gọn</string>
-  <string name="morphe_ryd_compact_layout_summary">Giảm chiều rộng nút Thích để tiết kiệm không gian</string>
   <string name="morphe_ryd_estimated_like_title">Hiện số lượt thích ước tính</string>
   <string name="morphe_ryd_estimated_like_summary">Hiển thị số lượt thích ước tính trên các video mà nhà sáng tạo đã ẩn lượt thích</string>
   <string name="morphe_ryd_toast_on_connection_error_title">Hiện cảnh báo lỗi kết nối</string>

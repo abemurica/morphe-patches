@@ -17,6 +17,7 @@ Second \"item\" text"</string>
 
 -->
 <resources>
+  <!-- layout.theme.splashAnimationPatch -->
   <!-- misc.initialization.initializationPatch -->
   <string name="morphe_restart_first_run">सेटअप पूर्ण करण्यासाठी रीस्टार्ट करा</string>
   <!-- layout.branding.baseCustomBrandingPatch -->
@@ -120,6 +121,7 @@ Second \"item\" text"</string>
   <string name="morphe_oauth2_connection_failure_auth_error">VR मध्ये साइन इन करू शकत नाही: %s</string>
   <string name="morphe_oauth2_toast_reset">Android VR मधून लॉग आउट झाले</string>
   <string name="morphe_oauth2_toast_invalid">Invalid VR साइन इन टोकन, VR मध्ये पुन्हा साइन इन करण्याचा प्रयत्न करा</string>
+  <!-- misc.medianotification.mediaNotificationControlsPatch -->
   <!-- misc.quic.disableQUICProtocolPatch -->
   <string name="morphe_disable_quic_protocol_title">QUIC प्रोटोकॉल अक्षम करा</string>
   <!-- misc.audio.drc.disableDRCAudioPatch  -->
@@ -207,9 +209,6 @@ Second \"item\" text"</string>
   <string name="morphe_ryd_enabled_title">Return YouTube Dislike सक्षम करा</string>
   <string name="morphe_ryd_dislike_percentage_title">आवड म्हणून dislikes दर्शवा</string>
   <string name="morphe_ryd_dislike_percentage_summary">dislikes ची संख्या ऐवजी likes च्या टक्केवारीनुसार दर्शवते</string>
-  <!-- Translations should match the language used in 'morphe_sb_enable_compact_skip_button'. -->
-  <string name="morphe_ryd_compact_layout_title">कॉम्पॅक्ट Like बटण वापरा</string>
-  <string name="morphe_ryd_compact_layout_summary">जागा वाचवण्यासाठी Like बटणाची रुंदी कमी करते</string>
   <string name="morphe_ryd_estimated_like_title">अंदाजित likes दर्शवा</string>
   <string name="morphe_ryd_estimated_like_summary">निर्मात्याने likes अक्षम केलेल्या व्हिडिओवर अंदाजित like संख्या दर्शवते</string>
   <string name="morphe_ryd_toast_on_connection_error_title">कनेक्शन त्रुटी सूचना दर्शवा</string>

@@ -17,6 +17,11 @@ Second \"item\" text"</string>
 
 -->
 <resources>
+  <!-- layout.theme.splashAnimationPatch -->
+  <string name="morphe_splash_screen_animation_style_title">Animazione di avvio</string>
+  <string name="morphe_splash_screen_animation_style_entry_1">Disattivato</string>
+  <string name="morphe_splash_screen_animation_style_entry_2">Colore</string>
+  <string name="morphe_splash_screen_animation_style_entry_3">Monocromatico</string>
   <!-- misc.initialization.initializationPatch -->
   <string name="morphe_restart_first_run">Riavvia per completare la configurazione</string>
   <!-- layout.branding.baseCustomBrandingPatch -->
@@ -46,7 +51,7 @@ Second \"item\" text"</string>
   <string name="morphe_external_downloader_name_summary">Nome del pacchetto dell\'app downloader esterna installata</string>
   <string name="morphe_external_downloader_other_item_hint">Inserisci nome pacchetto</string>
   <string name="morphe_external_downloader_other_item">Altro</string>
-  <string name="morphe_external_downloader_not_found_title">Applicazione non installata</string>
+  <string name="morphe_external_downloader_not_found_title">App non installata</string>
   <string name="morphe_external_downloader_not_installed_warning">%s non è installato. Si prega di installarlo.</string>
   <string name="morphe_external_downloader_package_not_found_warning">"Impossibile trovare un'app installata con il nome del pacchetto: %s
 
@@ -131,6 +136,13 @@ Per accedere, premi su Continua di seguito"</string>
   <string name="morphe_oauth2_connection_failure_auth_error">Impossibile accedere ad Android VR: %s</string>
   <string name="morphe_oauth2_toast_reset">Disconnesso da Android VR</string>
   <string name="morphe_oauth2_toast_invalid">Token di accesso Android VR non valido, prova ad accedere nuovamente</string>
+  <!-- misc.medianotification.mediaNotificationControlsPatch -->
+  <string name="morphe_notification_media_screen_title">Controlli multimediali delle notifiche</string>
+  <string name="morphe_notification_media_screen_summary">Personalizza i controlli di riproduzione visualizzati nella schermata di blocco e nel pannello delle notifiche</string>
+  <string name="morphe_hide_notification_media_prev_next_title">Nascondi i pulsanti Precedente &amp; Successivo</string>
+  <string name="morphe_hide_notification_media_prev_next_summary">Nasconde i pulsanti Precedente e Successivo nelle notifiche multimediali, nella schermata di blocco e per i controlli delle cuffie</string>
+  <string name="morphe_disable_notification_media_seekbar_title">Disattiva barra di avanzamento</string>
+  <string name="morphe_disable_notification_media_seekbar_summary">Impedisce di trascinare la barra di avanzamento sulla schermata di blocco e nel pannello delle notifiche</string>
   <!-- misc.quic.disableQUICProtocolPatch -->
   <string name="morphe_disable_quic_protocol_title">Disabilita il protocollo QUIC</string>
   <!-- misc.audio.drc.disableDRCAudioPatch  -->
@@ -235,12 +247,11 @@ Se in seguito verrà disattivata, si consiglia di cancellare i dati dell'app per
   <string name="morphe_ryd_failure_generic">Non Mi Piace non disponibili (%s)</string>
   <!-- Video likes have been set to hidden by the video uploader. -->
   <string name="morphe_ryd_video_likes_hidden_by_video_owner">Nascosto dal proprietario</string>
+  <string name="morphe_ryd_accessibility_dislike_count">Non mi piace questo video, insieme ad altre %s persone</string>
+  <string name="morphe_ryd_accessibility_dislike_percentage">Non mi piace questo video, il %s dei voti sono negativi</string>
   <string name="morphe_ryd_enabled_title">Abilita Return YouTube Dislike</string>
   <string name="morphe_ryd_dislike_percentage_title">Mostra i Non mi piace in percentuale</string>
   <string name="morphe_ryd_dislike_percentage_summary">Mostra i Non mi piace come percentuale di Mi piace anziché come numero</string>
-  <!-- Translations should match the language used in 'morphe_sb_enable_compact_skip_button'. -->
-  <string name="morphe_ryd_compact_layout_title">Usa il pulsante Mi piace compatto</string>
-  <string name="morphe_ryd_compact_layout_summary">Riduce la larghezza del pulsante Mi piace per risparmiare spazio</string>
   <string name="morphe_ryd_estimated_like_title">Mostra \"Mi piace\" stimati</string>
   <string name="morphe_ryd_estimated_like_summary">Mostra un conteggio approssimativo dei Mi piace su video in cui il creatore ha disabilitato i Mi piace</string>
   <string name="morphe_ryd_toast_on_connection_error_title">Mostra avvisi di errore di connessione</string>

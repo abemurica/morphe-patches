@@ -17,6 +17,11 @@ Second \"item\" text"</string>
 
 -->
 <resources>
+  <!-- layout.theme.splashAnimationPatch -->
+  <string name="morphe_splash_screen_animation_style_title">Opstartanimatie</string>
+  <string name="morphe_splash_screen_animation_style_entry_1">Uitgeschakeld</string>
+  <string name="morphe_splash_screen_animation_style_entry_2">Kleur</string>
+  <string name="morphe_splash_screen_animation_style_entry_3">Monochroom</string>
   <!-- misc.initialization.initializationPatch -->
   <string name="morphe_restart_first_run">Herstarten om de installatie te voltooien</string>
   <!-- layout.branding.baseCustomBrandingPatch -->
@@ -125,6 +130,13 @@ Om in te loggen, druk je op 'doorgaan' onderaan"</string>
   <string name="morphe_oauth2_connection_failure_auth_error">Kan niet aanmelden bij VR: %s</string>
   <string name="morphe_oauth2_toast_reset">Uitgelogd van Android VR</string>
   <string name="morphe_oauth2_toast_invalid">Ongeldig VR aanmeldtoken, probeer opnieuw aan te melden bij VR</string>
+  <!-- misc.medianotification.mediaNotificationControlsPatch -->
+  <string name="morphe_notification_media_screen_title">Mediabediening voor meldingen</string>
+  <string name="morphe_notification_media_screen_summary">Pas de afspeelbediening aan die op het vergrendelscherm en in het meldingspaneel wordt weergegeven</string>
+  <string name="morphe_hide_notification_media_prev_next_title">Verberg de knoppen Vorige en Volgende</string>
+  <string name="morphe_hide_notification_media_prev_next_summary">Verbergt de knoppen Vorige en Volgende in mediameldingen, op het vergrendelscherm en in de hoofdtelefoonbediening</string>
+  <string name="morphe_disable_notification_media_seekbar_title">Schuifregelaar uitschakelen</string>
+  <string name="morphe_disable_notification_media_seekbar_summary">Voorkomt dat de schuifregelaar op het vergrendelscherm en in het meldingspaneel wordt versleept</string>
   <!-- misc.quic.disableQUICProtocolPatch -->
   <string name="morphe_disable_quic_protocol_title">Uitschakelen van het QUIC-protocol</string>
   <!-- misc.audio.drc.disableDRCAudioPatch  -->
@@ -229,12 +241,11 @@ Als het later wordt uitgeschakeld, wordt aanbevolen om de app-gegevens te wissen
   <string name="morphe_ryd_failure_generic">\"Dislikes\" niet beschikbaar (%s)</string>
   <!-- Video likes have been set to hidden by the video uploader. -->
   <string name="morphe_ryd_video_likes_hidden_by_video_owner">Verborgen door eigenaar</string>
+  <string name="morphe_ryd_accessibility_dislike_count">Vind deze video niet leuk, samen met %s andere mensen</string>
+  <string name="morphe_ryd_accessibility_dislike_percentage">Vind deze video niet leuk, %s van de stemmen zijn dislikes</string>
   <string name="morphe_ryd_enabled_title">Return YouTube Dislike inschakelen</string>
   <string name="morphe_ryd_dislike_percentage_title">\"Dislikes\" als percentage weergeven</string>
   <string name="morphe_ryd_dislike_percentage_summary">Toont \"dislikes\" als een percentage van \"likes\" in plaats van een getal</string>
-  <!-- Translations should match the language used in 'morphe_sb_enable_compact_skip_button'. -->
-  <string name="morphe_ryd_compact_layout_title">Compacte Like-knop gebruiken</string>
-  <string name="morphe_ryd_compact_layout_summary">Vermindert de breedte van de Like-knop om ruimte te besparen</string>
   <string name="morphe_ryd_estimated_like_title">Geschatte likes weergeven</string>
   <string name="morphe_ryd_estimated_like_summary">Toont een geschat aantal likes op video\'s waarbij de maker likes heeft uitgeschakeld</string>
   <string name="morphe_ryd_toast_on_connection_error_title">Toon verbindingsfoutmeldingen</string>

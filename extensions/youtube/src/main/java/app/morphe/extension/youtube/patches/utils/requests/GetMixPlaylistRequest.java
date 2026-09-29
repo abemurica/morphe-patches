@@ -103,8 +103,8 @@ public class GetMixPlaylistRequest {
             HttpURLConnection connection = PlaylistRoutes.getConnection(PlaylistRoutes.GET_MIX_PLAYLIST, requestHeader);
             connection.setFixedLengthStreamingMode(requestBody.length);
             connection.getOutputStream().write(requestBody);
-            int responseCode = connection.getResponseCode();
-            if (responseCode == 200) {
+            final int responseCode = connection.getResponseCode();
+            if (responseCode == Requester.HTTP_STATUS_CODE_SUCCESS) {
                 return Requester.parseJSONObject(connection);
             }
             handleConnectionError("Get mix playlist failed with code: " + responseCode, null);
@@ -135,14 +135,21 @@ public class GetMixPlaylistRequest {
             }
             JSONObject navigationEndpoint = firstPlaylistContent.getJSONObject("playlistPanelVideoRenderer")
                     .getJSONObject("navigationEndpoint");
-            if (!navigationEndpoint.has("coWatchWatchEndpointWrapperCommand")) {
-                return false;
-            }
-            JSONObject watchEndpoint = navigationEndpoint.getJSONObject("coWatchWatchEndpointWrapperCommand")
-                    .getJSONObject("watchEndpoint")
-                    .getJSONObject("watchEndpoint");
 
-            if (!watchEndpoint.has("playerParams")) {
+            // YouTube removed the "coWatchWatchEndpointWrapperCommand" wrapper and now returns
+            // the watch endpoint directly under the navigation endpoint, which broke
+            // music detection (https://github.com/MorpheApp/morphe-patches/issues/2936).
+            // Support both the new direct path and the legacy wrapper path.
+            JSONObject watchEndpoint = null;
+            if (navigationEndpoint.has("watchEndpoint")) {
+                watchEndpoint = navigationEndpoint.getJSONObject("watchEndpoint");
+            } else if (navigationEndpoint.has("coWatchWatchEndpointWrapperCommand")) {
+                watchEndpoint = navigationEndpoint.getJSONObject("coWatchWatchEndpointWrapperCommand")
+                        .getJSONObject("watchEndpoint")
+                        .getJSONObject("watchEndpoint");
+            }
+
+            if (watchEndpoint == null || !watchEndpoint.has("playerParams")) {
                 return false;
             }
 

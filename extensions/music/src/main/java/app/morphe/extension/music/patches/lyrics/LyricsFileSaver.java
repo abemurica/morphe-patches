@@ -17,11 +17,15 @@ import android.provider.MediaStore;
 
 import androidx.annotation.Nullable;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Locale;
 
+import app.morphe.extension.music.patches.lyrics.requests.LrcParser;
+import app.morphe.extension.shared.Logger;
 import app.morphe.extension.shared.ResourceUtils;
 
 /**
@@ -35,6 +39,15 @@ public final class LyricsFileSaver {
 
     @Nullable
     public static String save(Context context, TrackInfo track, Lyrics lyrics) {
+        try {
+            return saveUnchecked(context, track, lyrics);
+        } catch (Throwable ignored) {
+            return null;
+        }
+    }
+
+    @Nullable
+    private static String saveUnchecked(Context context, TrackInfo track, Lyrics lyrics) {
         String content = lyrics.rawFormat();
         String formatType = lyrics.formatType();
 
@@ -51,6 +64,10 @@ public final class LyricsFileSaver {
                 content = rebuildLyricifyLines(lyrics.lines());
             } else if ("lys".equals(formatType)) {
                 content = rebuildLyricifySyllable(lyrics.lines());
+            } else if ("dzr.json".equals(formatType)) {
+                content = rebuildDzrJson(lyrics.lines());
+            } else if ("wsy".equals(formatType)) {
+                return null;
             } else {
                 content = rebuildPlainText(lyrics.lines());
                 formatType = "txt";
@@ -80,11 +97,17 @@ public final class LyricsFileSaver {
 
         values.put(MediaStore.Downloads.IS_PENDING, 1);
 
-        Uri insertUri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
+        Uri insertUri;
+        try {
+            insertUri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
+        } catch (Throwable ignored) {
+            return null;
+        }
         if (insertUri == null) {
             return null;
         }
 
+        boolean written = false;
         try (OutputStream out = resolver.openOutputStream(insertUri)) {
             if (out == null) {
                 resolver.delete(insertUri, null, null);
@@ -92,14 +115,24 @@ public final class LyricsFileSaver {
             }
             out.write(content.getBytes(StandardCharsets.UTF_8));
             out.flush();
+            written = true;
             return Environment.DIRECTORY_DOWNLOADS + "/" + directoryName + "/" + fileName;
         } catch (Exception ex) {
-            resolver.delete(insertUri, null, null);
+            Logger.printDebug(() -> "Could not save lyrics file", ex);
+            try {
+                resolver.delete(insertUri, null, null);
+            } catch (Throwable ignored) {
+            }
             return null;
         } finally {
-            values.clear();
-            values.put(MediaStore.Downloads.IS_PENDING, 0);
-            resolver.update(insertUri, values, null, null);
+            if (written) {
+                try {
+                    values.clear();
+                    values.put(MediaStore.Downloads.IS_PENDING, 0);
+                    resolver.update(insertUri, values, null, null);
+                } catch (Throwable ignored) {
+                }
+            }
         }
     }
 
@@ -127,12 +160,8 @@ public final class LyricsFileSaver {
     private static String rebuildLrc(List<LyricsLine> lines) {
         StringBuilder sb = new StringBuilder(50 * lines.size());
         for (LyricsLine line : lines) {
-            final long totalMs = line.startTimeMs();
-            final long min = totalMs / 60000;
-            final long sec = (totalMs % 60000) / 1000;
-            final long ms = totalMs % 1000;
             sb.append('[')
-              .append(String.format(Locale.US, "%02d:%02d.%02d", min, sec, ms / 10))
+              .append(LrcParser.formatCentiseconds(line.startTimeMs()))
               .append(']')
               .append(line.text())
               .append('\n');
@@ -182,6 +211,24 @@ public final class LyricsFileSaver {
             sb.append(lines.get(i).text());
         }
         return sb.toString();
+    }
+
+    private static String rebuildDzrJson(List<LyricsLine> lines) {
+        JSONArray arr = new JSONArray();
+        for (LyricsLine line : lines) {
+            JSONObject obj = new JSONObject();
+            try {
+                final long ms = line.startTimeMs();
+                obj.put("lrcTimestamp", "[" + LrcParser.formatCentiseconds(ms) + "]");
+                obj.put("line", line.text());
+                obj.put("milliseconds", ms);
+                obj.put("duration", line.endTimeMs() - line.startTimeMs());
+                arr.put(obj);
+            } catch (Exception ex) {
+                Logger.printDebug(() -> "rebuildDzrJson failure", ex);
+            }
+        }
+        return arr.toString();
     }
 
     private static String sanitizeFileName(String name) {

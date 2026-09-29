@@ -14,12 +14,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -41,6 +44,8 @@ public final class CaptionsFetcher {
 
     private static final int CONNECT_TIMEOUT_MS = 5_000;
     private static final int READ_TIMEOUT_MS = 8_000;
+    private static final int VALIDATE_CONNECT_TIMEOUT_MS = 10_000;
+    private static final int VALIDATE_READ_TIMEOUT_MS = 12_000;
     private static final String INNERTUBE_PLAYER_URL =
             "https://www.youtube.com/youtubei/v1/player?prettyPrint=false";
     private static final String TIMEDTEXT_URL =
@@ -53,6 +58,9 @@ public final class CaptionsFetcher {
     private static final String SW_COOKIE_URL = "https://www.youtube.com/sw.js";
     private static final List<String> COOKIE_KEYS = Arrays.asList(
             "YSC", "VISITOR_INFO1_LIVE", "VISITOR_PRIVACY_METADATA", "__Secure-ROLLOUT_TOKEN"
+    );
+    private static final List<String> REQUIRED_USER_COOKIE_KEYS = Arrays.asList(
+            "SID", "HSID", "SSID", "SAPISID", "__Secure-3PAPISID", "__Secure-1PAPISID", "LOGIN_INFO"
     );
     private static volatile String cachedCookies = null;
     private static volatile long cachedCookiesTime = 0;
@@ -123,7 +131,7 @@ public final class CaptionsFetcher {
 
         @Override
         @Nullable
-        public Lyrics fetch(app.morphe.extension.music.patches.lyrics.TrackInfo track) throws Exception {
+        public FetchResult fetch(app.morphe.extension.music.patches.lyrics.TrackInfo track) throws Exception {
             CaptionsOutcome outcome = CaptionsFetcher.fetch();
 
             if (outcome.errorReason != null) {
@@ -137,7 +145,7 @@ public final class CaptionsFetcher {
             Lyrics result = outcome.lyrics;
             if (outcome.translationLyrics != null && !outcome.translationLyrics.isEmpty()) {
                 String langTag = Locale.getDefault().toLanguageTag();
-                Map<String, List<LyricsLine>> translations = new java.util.HashMap<>();
+                Map<String, List<LyricsLine>> translations = new HashMap<>();
                 translations.put(langTag, outcome.translationLyrics.lines());
                 result = new Lyrics(result.lines(), result.providerName(), result.synced(),
                         result.romanization(), translations,
@@ -146,7 +154,7 @@ public final class CaptionsFetcher {
                         result.sourceUrl());
             }
 
-            return result;
+            return FetchResult.of(result);
         }
     }
 
@@ -200,6 +208,7 @@ public final class CaptionsFetcher {
             }
             return allowProviders(captions.innertubeTrack());
         } catch (Exception ex) {
+            Logger.printDebug(() -> "fetchCaptions failure", ex);
             return CaptionsOutcome.ALLOW_PROVIDERS;
         }
     }
@@ -254,6 +263,7 @@ public final class CaptionsFetcher {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException ex) {
+                    Logger.printDebug(() -> "Interrupted waiting for video ID", ex);
                     Thread.currentThread().interrupt();
                     break;
                 }
@@ -271,6 +281,7 @@ public final class CaptionsFetcher {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ex) {
+                Logger.printDebug(() -> "Interrupted retrying video ID", ex);
                 Thread.currentThread().interrupt();
                 break;
             }
@@ -329,7 +340,7 @@ public final class CaptionsFetcher {
     }
 
     private static Set<String> extractTranslationLanguages(String json) {
-        Set<String> langs = new java.util.HashSet<>();
+        Set<String> langs = new HashSet<>();
         int idx = json.indexOf("\"translationLanguages\":[");
         if (idx < 0) {
             return langs;
@@ -492,7 +503,9 @@ public final class CaptionsFetcher {
             if (numEnd > numStart) {
                 try {
                     defaultIdx = Integer.parseInt(json.substring(numStart, numEnd));
-                } catch (NumberFormatException ignored) {}
+                } catch (NumberFormatException ex) {
+                    Logger.printDebug(() -> "Could not parse default track index", ex);
+                }
             }
         }
         if (defaultIdx < 0) {
@@ -591,7 +604,8 @@ public final class CaptionsFetcher {
                     return runs.getJSONObject(0).optString("text", "");
                 }
             }
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+            Logger.printDebug(() -> "Could not extract name from track", ex);
         }
         return "";
     }
@@ -727,7 +741,7 @@ public final class CaptionsFetcher {
     }
 
     private static String getCookies() {
-        String userCookies = Settings.LYRICS_CAPTION_COOKIES.get();
+        String userCookies = normalizeCookies(Settings.LYRICS_CAPTION_COOKIES.get());
         if (!userCookies.isEmpty()) {
             return userCookies;
         }
@@ -749,7 +763,7 @@ public final class CaptionsFetcher {
             conn.setReadTimeout(5000);
 
             final int responseCode = conn.getResponseCode();
-            if (responseCode == 200) {
+            if (responseCode == Requester.HTTP_STATUS_CODE_SUCCESS) {
                 List<String> setCookies = conn.getHeaderFields().get("Set-Cookie");
                 cachedCookies = parseCookies(setCookies);
                 cachedCookiesTime = System.currentTimeMillis();
@@ -772,6 +786,7 @@ public final class CaptionsFetcher {
             if (eq > 0) {
                 String key = entry.substring(0, eq).trim();
                 if (COOKIE_KEYS.contains(key)) {
+                    //noinspection SizeReplaceableByIsEmpty
                     if (sb.length() > 0) sb.append("; ");
                     sb.append(entry);
                 }
@@ -790,6 +805,41 @@ public final class CaptionsFetcher {
             }
         }
         return null;
+    }
+
+    private static String normalizeCookies(String raw) {
+        if (raw == null || raw.isEmpty()) return "";
+        String value = raw.trim();
+        if (value.regionMatches(true, 0, "Cookie:", 0, "Cookie:".length())) {
+            value = value.substring("Cookie:".length()).trim();
+        }
+        final int valueLength = value.length();
+        if (valueLength >= 2) {
+            final char firstChar = value.charAt(0);
+            final char lastChar = value.charAt(valueLength - 1);
+            if (((firstChar == '"' && lastChar == '"') || (firstChar == '\'' && lastChar == '\''))) {
+                value = value.substring(1, valueLength - 1).trim();
+            }
+        }
+
+        StringBuilder sb = new StringBuilder(valueLength);
+        for (String part : value.split("[;\\r\\n]+")) {
+            String trimmed = part.trim();
+            if (trimmed.isEmpty() || trimmed.indexOf('=') <= 0) continue;
+            //noinspection SizeReplaceableByIsEmpty
+            if (sb.length() > 0) sb.append("; ");
+            sb.append(trimmed);
+        }
+        return sb.toString();
+    }
+
+    private static boolean hasRequiredCookieKeys(String cookies) {
+        if (cookies.isEmpty()) return false;
+        for (String key : REQUIRED_USER_COOKIE_KEYS) {
+            String value = extractCookieValue(cookies, key);
+            if (value == null || value.isEmpty()) return false;
+        }
+        return true;
     }
 
     @Nullable
@@ -811,12 +861,64 @@ public final class CaptionsFetcher {
             }
             return "SAPISIDHASH " + timestamp + "_" + hex;
         } catch (Exception ex) {
+            Logger.printDebug(() -> "Could not compute SAPISIDHASH", ex);
             return null;
+        }
+    }
+
+    @Nullable
+    private static String postInnertubePlayer(String bodyJson, @Nullable String cookies) throws Exception {
+        return postInnertubePlayer(bodyJson, cookies, CONNECT_TIMEOUT_MS, READ_TIMEOUT_MS);
+    }
+
+    @Nullable
+    private static String postInnertubePlayer(String bodyJson, @Nullable String cookies,
+                                              int connectTimeoutMs, int readTimeoutMs) throws Exception {
+        HttpURLConnection conn = Requester.openConnection(INNERTUBE_PLAYER_URL);
+        try {
+            conn.setRequestMethod("POST");
+            conn.setConnectTimeout(connectTimeoutMs);
+            conn.setReadTimeout(readTimeoutMs);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("User-Agent", CAPTION_USER_AGENT);
+            conn.setRequestProperty("Origin", "https://www.youtube.com");
+            conn.setRequestProperty("Referer", "https://www.youtube.com/");
+            conn.setRequestProperty("X-Origin", "https://www.youtube.com");
+            conn.setRequestProperty("X-YouTube-Client-Name", "1");
+            conn.setRequestProperty("X-YouTube-Client-Version", "2.20250101.00.00");
+            conn.setRequestProperty("X-Goog-AuthUser", "0");
+
+            if (cookies != null && !cookies.isEmpty()) {
+                conn.setRequestProperty("Cookie", cookies);
+                String sapisidHash = computeSapisidHash(cookies);
+                if (sapisidHash != null) {
+                    conn.setRequestProperty("Authorization", sapisidHash);
+                }
+            }
+            conn.setDoOutput(true);
+
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(bodyJson.getBytes(StandardCharsets.UTF_8));
+            }
+
+            final int responseCode = conn.getResponseCode();
+            if (responseCode != 200) {
+                return null;
+            }
+
+            return Requester.parseString(conn);
+        } finally {
+            conn.disconnect();
         }
     }
 
     public static boolean validateYouTubeCookies(String cookies) {
         if (cookies == null || cookies.trim().isEmpty()) return false;
+        final String normalized = normalizeCookies(cookies);
+        if (!hasRequiredCookieKeys(normalized)) {
+            Logger.printDebug(() -> "YouTube cookies are missing required keys");
+            return false;
+        }
         try {
             JSONObject body = new JSONObject();
             JSONObject client = new JSONObject();
@@ -829,97 +931,37 @@ public final class CaptionsFetcher {
             body.put("context", context);
             body.put("videoId", "dQw4w9WgXcQ");
 
-            HttpURLConnection conn = Requester.openConnection(INNERTUBE_PLAYER_URL);
-            try {
-                conn.setRequestMethod("POST");
-                conn.setConnectTimeout(5000);
-                conn.setReadTimeout(8000);
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("User-Agent", CAPTION_USER_AGENT);
-                conn.setRequestProperty("Origin", "https://www.youtube.com");
-                conn.setRequestProperty("Referer", "https://www.youtube.com/");
-                conn.setRequestProperty("X-Origin", "https://www.youtube.com");
-                conn.setRequestProperty("X-YouTube-Client-Name", "1");
-                conn.setRequestProperty("X-YouTube-Client-Version", "2.20250101.00.00");
-                conn.setRequestProperty("X-Goog-AuthUser", "0");
-                conn.setRequestProperty("Cookie", cookies);
-                String sapisidHash = computeSapisidHash(cookies);
-                if (sapisidHash != null) {
-                    conn.setRequestProperty("Authorization", sapisidHash);
+            String json = null;
+            for (int attempt = 1; attempt <= 2 && json == null; attempt++) {
+                final int currentAttempt = attempt;
+                try {
+                    json = postInnertubePlayer(body.toString(), normalized,
+                            VALIDATE_CONNECT_TIMEOUT_MS, VALIDATE_READ_TIMEOUT_MS);
+                } catch (IOException ex) {
+                    Logger.printDebug(() -> "YouTube cookie validation attempt "
+                            + currentAttempt + " failed", ex);
                 }
-                conn.setDoOutput(true);
-
-                try (OutputStream os = conn.getOutputStream()) {
-                    os.write(body.toString().getBytes(StandardCharsets.UTF_8));
-                }
-
-                final int responseCode = conn.getResponseCode();
-                if (responseCode != 200) {
-                    return false;
-                }
-
-                String json = Requester.parseString(conn);
-                JSONObject resp = new JSONObject(json);
-                JSONObject ps = resp.optJSONObject("playabilityStatus");
-                String status = ps != null ? ps.optString("status") : null;
-                return "OK".equals(status);
-            } finally {
-                conn.disconnect();
             }
+            if (json == null) {
+                return false;
+            }
+            JSONObject resp = new JSONObject(json);
+            JSONObject ps = resp.optJSONObject("playabilityStatus");
+            String status = ps != null ? ps.optString("status") : null;
+            return "OK".equals(status);
         } catch (Exception ex) {
+            Logger.printDebug(() -> "Could not validate YouTube cookies", ex);
             return false;
         }
     }
 
     @Nullable
     private static String fetchInnertubePlayer(String videoId) {
-        String cookies = getCookies();
-        final boolean hasCookies = cookies != null && !cookies.isEmpty();
-
         try {
             String bodyStr = buildPlayerRequestBody(videoId);
-
-            HttpURLConnection conn = null;
-            try {
-                conn = Requester.openConnection(INNERTUBE_PLAYER_URL);
-                conn.setRequestMethod("POST");
-                conn.setConnectTimeout(CONNECT_TIMEOUT_MS);
-                conn.setReadTimeout(READ_TIMEOUT_MS);
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("User-Agent", CAPTION_USER_AGENT);
-                conn.setRequestProperty("Origin", "https://www.youtube.com");
-                conn.setRequestProperty("Referer", "https://www.youtube.com/");
-                conn.setRequestProperty("X-Origin", "https://www.youtube.com");
-                conn.setRequestProperty("X-YouTube-Client-Name", "1");
-                conn.setRequestProperty("X-YouTube-Client-Version", "2.20250101.00.00");
-                conn.setRequestProperty("X-Goog-AuthUser", "0");
-                conn.setDoOutput(true);
-
-                if (hasCookies) {
-                    conn.setRequestProperty("Cookie", cookies);
-                    String sapisidHash = computeSapisidHash(cookies);
-                    if (sapisidHash != null) {
-                        conn.setRequestProperty("Authorization", sapisidHash);
-                    }
-                }
-
-                try (OutputStream os = conn.getOutputStream()) {
-                    os.write(bodyStr.getBytes(StandardCharsets.UTF_8));
-                }
-
-                final int responseCode = conn.getResponseCode();
-                if (responseCode != 200) {
-                    return null;
-                }
-                return Requester.parseString(conn);
-            } catch (Exception ex) {
-                return null;
-            } finally {
-                if (conn != null) {
-                    conn.disconnect();
-                }
-            }
+            return postInnertubePlayer(bodyStr, getCookies());
         } catch (Exception ex) {
+            Logger.printDebug(() -> "Could not fetch InnerTube player", ex);
             return null;
         }
     }
@@ -966,7 +1008,8 @@ public final class CaptionsFetcher {
                 if (!lines.isEmpty()) {
                     return new Lyrics(lines, Lyrics.CAPTIONS_PROVIDER, true, null, null, null, null, json, "json3", null);
                 }
-            } catch (Exception ignored) {
+            } catch (Exception ex) {
+                Logger.printDebug(() -> "Could not fetch via timedtext for lang: " + lang, ex);
             }
         }
         return null;

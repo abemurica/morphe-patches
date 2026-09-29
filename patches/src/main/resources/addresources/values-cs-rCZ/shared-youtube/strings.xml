@@ -17,6 +17,11 @@ Second \"item\" text"</string>
 
 -->
 <resources>
+  <!-- layout.theme.splashAnimationPatch -->
+  <string name="morphe_splash_screen_animation_style_title">Animace při spuštění</string>
+  <string name="morphe_splash_screen_animation_style_entry_1">Vypnuto</string>
+  <string name="morphe_splash_screen_animation_style_entry_2">Barva</string>
+  <string name="morphe_splash_screen_animation_style_entry_3">Monochromatický</string>
   <!-- misc.initialization.initializationPatch -->
   <string name="morphe_restart_first_run">Restartovat pro dokončení nastavení</string>
   <!-- layout.branding.baseCustomBrandingPatch -->
@@ -131,6 +136,13 @@ Pro přihlášení stiskněte pokračovat níže"</string>
   <string name="morphe_oauth2_connection_failure_auth_error">Nemůže se přihlásit do VR: %s</string>
   <string name="morphe_oauth2_toast_reset">Odhlášení z Android VR</string>
   <string name="morphe_oauth2_toast_invalid">Neplatný token pro přihlášení do VR, zkuste se přihlásit do VR znovu</string>
+  <!-- misc.medianotification.mediaNotificationControlsPatch -->
+  <string name="morphe_notification_media_screen_title">Ovládací prvky médií v oznámení</string>
+  <string name="morphe_notification_media_screen_summary">Přizpůsobte ovládací prvky přehrávání zobrazené na zamykací obrazovce a v panelu oznámení</string>
+  <string name="morphe_hide_notification_media_prev_next_title">Skrýt tlačítka Předchozí &amp; Další</string>
+  <string name="morphe_hide_notification_media_prev_next_summary">Skrývá tlačítka Předchozí a Další v oznámení o médiích, na zamykací obrazovce a v ovládacích prvcích sluchátek.</string>
+  <string name="morphe_disable_notification_media_seekbar_title">Zakázat posuvník</string>
+  <string name="morphe_disable_notification_media_seekbar_summary">Zabrání přetahování posuvníku na zamykací obrazovce a v panelu oznámení</string>
   <!-- misc.quic.disableQUICProtocolPatch -->
   <string name="morphe_disable_quic_protocol_title">Vypnout protokol QUIC</string>
   <!-- misc.audio.drc.disableDRCAudioPatch  -->
@@ -235,12 +247,11 @@ Pokud bude později vypnuta, doporučujeme vymazat data aplikace, aby se zabrán
   <string name="morphe_ryd_failure_generic">Nelíbí se se nedají použít (%s)</string>
   <!-- Video likes have been set to hidden by the video uploader. -->
   <string name="morphe_ryd_video_likes_hidden_by_video_owner">Skryto vlastníkem</string>
+  <string name="morphe_ryd_accessibility_dislike_count">Toto video se mi nelíbí, spolu s %s dalšími lidmi</string>
+  <string name="morphe_ryd_accessibility_dislike_percentage">Toto video se mi nelíbí, %s hlasů je negativních.</string>
   <string name="morphe_ryd_enabled_title">Povolit Return YouTube Dislike</string>
   <string name="morphe_ryd_dislike_percentage_title">Zobrazit nelíbí se v procentech</string>
   <string name="morphe_ryd_dislike_percentage_summary">Zobrazuje nelíbí se jako procento lajků místo čísla</string>
-  <!-- Translations should match the language used in 'morphe_sb_enable_compact_skip_button'. -->
-  <string name="morphe_ryd_compact_layout_title">Použít kompaktní tlačítko Lajk</string>
-  <string name="morphe_ryd_compact_layout_summary">Zmenšuje šířku tlačítka Lajk pro úsporu místa</string>
   <string name="morphe_ryd_estimated_like_title">Zobrazit odhadované počty To se mi líbí</string>
   <string name="morphe_ryd_estimated_like_summary">Zobrazuje odhadovaný počet lajků u videí, kde tvůrce zakázal lajky</string>
   <string name="morphe_ryd_toast_on_connection_error_title">Zobrazovat upozornění na chyby připojení</string>

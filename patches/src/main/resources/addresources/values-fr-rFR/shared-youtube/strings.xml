@@ -17,6 +17,11 @@ Second \"item\" text"</string>
 
 -->
 <resources>
+  <!-- layout.theme.splashAnimationPatch -->
+  <string name="morphe_splash_screen_animation_style_title">Animation de démarrage</string>
+  <string name="morphe_splash_screen_animation_style_entry_1">Désactivé</string>
+  <string name="morphe_splash_screen_animation_style_entry_2">Coloré</string>
+  <string name="morphe_splash_screen_animation_style_entry_3">Monochrome</string>
   <!-- misc.initialization.initializationPatch -->
   <string name="morphe_restart_first_run">Redémarrez pour terminer la configuration</string>
   <!-- layout.branding.baseCustomBrandingPatch -->
@@ -131,6 +136,13 @@ Pour vous connecter, appuyez sur 'Continuer' ci-dessous."</string>
   <string name="morphe_oauth2_connection_failure_auth_error">Impossible de se connecter à VR : %s</string>
   <string name="morphe_oauth2_toast_reset">Déconnexion de Android VR</string>
   <string name="morphe_oauth2_toast_invalid">Jeton de connexion à VR invalide, veuillez réessayer la connexion à VR</string>
+  <!-- misc.medianotification.mediaNotificationControlsPatch -->
+  <string name="morphe_notification_media_screen_title">Contrôles des médias de notification</string>
+  <string name="morphe_notification_media_screen_summary">Personnalisez les commandes de lecture affichées sur votre écran de verrouillage et le panneau de notifications</string>
+  <string name="morphe_hide_notification_media_prev_next_title">Masquer les boutons \'Précédent\' &amp; \'Suivant\'</string>
+  <string name="morphe_hide_notification_media_prev_next_summary">Masque les boutons \'Précédent\' et \'Suivant\' dans la notification multimédia, sur l\'écran de verrouillage et les commandes du casque</string>
+  <string name="morphe_disable_notification_media_seekbar_title">Désactiver la barre de progression</string>
+  <string name="morphe_disable_notification_media_seekbar_summary">Empêche le déplacement de la barre de progression sur l\'écran de verrouillage et le panneau de notifications</string>
   <!-- misc.quic.disableQUICProtocolPatch -->
   <string name="morphe_disable_quic_protocol_title">Désactiver le protocole QUIC</string>
   <!-- misc.audio.drc.disableDRCAudioPatch  -->
@@ -235,12 +247,11 @@ Si vous désactivez cette option par la suite, il est recommandé d'effacer les 
   <string name="morphe_ryd_failure_generic">Les \'Je n\'aime pas\' sont indisponibles (%s)</string>
   <!-- Video likes have been set to hidden by the video uploader. -->
   <string name="morphe_ryd_video_likes_hidden_by_video_owner">Masqué par le propriétaire</string>
+  <string name="morphe_ryd_accessibility_dislike_count">Je n\'aime pas cette vidéo, comme %s autres personnes</string>
+  <string name="morphe_ryd_accessibility_dislike_percentage">Je n\'aime pas cette vidéo, %s des votes sont des \'Je n\'aime pas\'</string>
   <string name="morphe_ryd_enabled_title">Activer Return YouTube Dislike</string>
   <string name="morphe_ryd_dislike_percentage_title">Afficher les \'Je n\'aime pas\' en pourcentage</string>
   <string name="morphe_ryd_dislike_percentage_summary">Affiche les \'Je n\'aime pas\' en pourcentage du nombre de \'J\'aime\' au lieu d\'un nombre</string>
-  <!-- Translations should match the language used in 'morphe_sb_enable_compact_skip_button'. -->
-  <string name="morphe_ryd_compact_layout_title">Utiliser un bouton \'J\'aime\' compact</string>
-  <string name="morphe_ryd_compact_layout_summary">Réduit la largeur du bouton \'J\'aime\' pour gagner de la place</string>
   <string name="morphe_ryd_estimated_like_title">Afficher les \'J\'aime\' estimés</string>
   <string name="morphe_ryd_estimated_like_summary">Affiche un nombre estimé de \'J\'aime\' sur les vidéos où le créateur a désactivé les \'J\'aime\'</string>
   <string name="morphe_ryd_toast_on_connection_error_title">Afficher les alertes d\'erreur de connexion</string>

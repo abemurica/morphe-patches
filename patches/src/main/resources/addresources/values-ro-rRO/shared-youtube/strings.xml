@@ -17,6 +17,11 @@ Second \"item\" text"</string>
 
 -->
 <resources>
+  <!-- layout.theme.splashAnimationPatch -->
+  <string name="morphe_splash_screen_animation_style_title">Animație de pornire</string>
+  <string name="morphe_splash_screen_animation_style_entry_1">Dezactivat</string>
+  <string name="morphe_splash_screen_animation_style_entry_2">Culoare</string>
+  <string name="morphe_splash_screen_animation_style_entry_3">Monocrom</string>
   <!-- misc.initialization.initializationPatch -->
   <string name="morphe_restart_first_run">Reporniți pentru a finaliza configurarea</string>
   <!-- layout.branding.baseCustomBrandingPatch -->
@@ -131,6 +136,13 @@ Pentru a te apăsa, apăsă butonul Continu de mai jos"</string>
   <string name="morphe_oauth2_connection_failure_auth_error">Nu puteți vă conecta la VR: %s</string>
   <string name="morphe_oauth2_toast_reset">Delogat din Android VR</string>
   <string name="morphe_oauth2_toast_invalid">Tokenul de autentificare pentru VR este invalid, încercați să vă conectați la VR din nou</string>
+  <!-- misc.medianotification.mediaNotificationControlsPatch -->
+  <string name="morphe_notification_media_screen_title">Controale media pentru notificări</string>
+  <string name="morphe_notification_media_screen_summary">Personalizează comenzile de redare afișate pe ecranul de blocare și în panoul de notificări</string>
+  <string name="morphe_hide_notification_media_prev_next_title">Ascunde butoanele Anterior și Următor</string>
+  <string name="morphe_hide_notification_media_prev_next_summary">Ascunde butoanele Anterior și Următor din notificarea media, de pe ecranul de blocare și din comenzile căștilor</string>
+  <string name="morphe_disable_notification_media_seekbar_title">Dezactivează bara de căutare</string>
+  <string name="morphe_disable_notification_media_seekbar_summary">Împiedică glisarea barei de căutare pe ecranul de blocare și în panoul de notificări</string>
   <!-- misc.quic.disableQUICProtocolPatch -->
   <string name="morphe_disable_quic_protocol_title">Dezactivați protocolul QUIC</string>
   <!-- misc.audio.drc.disableDRCAudioPatch  -->
@@ -235,12 +247,11 @@ Dacă este dezactivat ulterior, se recomandă să ștergeți datele aplicației 
   <string name="morphe_ryd_failure_generic">Dislike-uri indisponibile (%s)</string>
   <!-- Video likes have been set to hidden by the video uploader. -->
   <string name="morphe_ryd_video_likes_hidden_by_video_owner">Ascuns de proprietar</string>
+  <string name="morphe_ryd_accessibility_dislike_count">Nu-mi place acest videoclip, împreună cu alte %s persoane</string>
+  <string name="morphe_ryd_accessibility_dislike_percentage">Nu-mi place acest videoclip, %s din voturi sunt dislike-uri</string>
   <string name="morphe_ryd_enabled_title">Activează Return YouTube Dislike</string>
   <string name="morphe_ryd_dislike_percentage_title">Afișează dislike-uri ca procentaj</string>
   <string name="morphe_ryd_dislike_percentage_summary">Afișează dislike-uri ca procentaj din numărul de like-uri, în loc de un număr</string>
-  <!-- Translations should match the language used in 'morphe_sb_enable_compact_skip_button'. -->
-  <string name="morphe_ryd_compact_layout_title">Utilizează butonul Like compact</string>
-  <string name="morphe_ryd_compact_layout_summary">Reduce lățimea butonului Like pentru a economisi spațiu</string>
   <string name="morphe_ryd_estimated_like_title">Afișați aprecierile estimate</string>
   <string name="morphe_ryd_estimated_like_summary">Afișează un număr estimativ de like-uri pe videoclipurile unde creatorul a dezactivat like-urile</string>
   <string name="morphe_ryd_toast_on_connection_error_title">Afișează alerte de eroare de conexiune</string>
