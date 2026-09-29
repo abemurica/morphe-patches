@@ -1,3 +1,9 @@
+## [1.44.0-dev.4](https://github.com/abhimanbhau/morphe-patches/compare/v1.44.0-dev.3...v1.44.0-dev.4) (2026-09-29)
+
+### ✨ New Features
+
+* **YouTube - Playback buffer:** Add playback buffer size option ([cfabfa6](https://github.com/abhimanbhau/morphe-patches/commit/cfabfa66e4adb92902aa7526e9fc9b828a720f30))
+
 ## [1.44.0-dev.3](https://github.com/abhimanbhau/morphe-patches/compare/v1.44.0-dev.2...v1.44.0-dev.3) (2026-09-29)
 
 ### ✨ New Features

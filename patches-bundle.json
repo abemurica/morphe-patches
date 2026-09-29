@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-09-29T05:02:16",
-  "description": "## [1.44.0-dev.3](https://github.com/abhimanbhau/morphe-patches/compare/v1.44.0-dev.2...v1.44.0-dev.3) (2026-09-29)\n\n### ✨ New Features\n\n* **YouTube - Hide layout components:** Add \"Hide 'In this video' button\" setting ([9dda712](https://github.com/abhimanbhau/morphe-patches/commit/9dda7125ebbcc314c3bc1bedf2dd52ba116c4394))",
-  "download_url": "https://github.com/abhimanbhau/morphe-patches/releases/download/v1.44.0-dev.3/patches-1.44.0-dev.3.mpp",
+  "created_at": "2026-09-29T05:06:44",
+  "description": "## [1.44.0-dev.4](https://github.com/abhimanbhau/morphe-patches/compare/v1.44.0-dev.3...v1.44.0-dev.4) (2026-09-29)\n\n### ✨ New Features\n\n* **YouTube - Playback buffer:** Add playback buffer size option ([cfabfa6](https://github.com/abhimanbhau/morphe-patches/commit/cfabfa66e4adb92902aa7526e9fc9b828a720f30))",
+  "download_url": "https://github.com/abhimanbhau/morphe-patches/releases/download/v1.44.0-dev.4/patches-1.44.0-dev.4.mpp",
   "signature_download_url": "",
-  "version": "1.44.0-dev.3"
+  "version": "1.44.0-dev.4"
 }
