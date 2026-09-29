@@ -1,3 +1,9 @@
+## [1.44.0-dev.3](https://github.com/abhimanbhau/morphe-patches/compare/v1.44.0-dev.2...v1.44.0-dev.3) (2026-09-29)
+
+### ✨ New Features
+
+* **YouTube - Hide layout components:** Add "Hide 'In this video' button" setting ([9dda712](https://github.com/abhimanbhau/morphe-patches/commit/9dda7125ebbcc314c3bc1bedf2dd52ba116c4394))
+
 ## [1.44.0-dev.2](https://github.com/abhimanbhau/morphe-patches/compare/v1.44.0-dev.1...v1.44.0-dev.2) (2026-09-29)
 
 ### 🐛 Bug Fixes
