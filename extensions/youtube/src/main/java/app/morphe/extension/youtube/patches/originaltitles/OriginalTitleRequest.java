@@ -23,8 +23,12 @@ import app.morphe.extension.shared.Utils;
 import app.morphe.extension.shared.requests.Requester;
 
 /**
- * Fetches original video titles from the public oEmbed endpoint,
- * which always returns the title as set by the uploader.
+ * Fetches the titles that replace the titles shown by YouTube.
+ * <p>
+ * Original titles are fetched from the public oEmbed endpoint, which always returns the title
+ * as set by the uploader. DeArrow titles are fetched with {@link DeArrowTitleRequest},
+ * and if DeArrow has no title then the original title or no title is used,
+ * depending on the {@link RestoreOriginalTitlesPatch.TitleType}.
  */
 final class OriginalTitleRequest {
 
@@ -37,7 +41,7 @@ final class OriginalTitleRequest {
     private static final long FAILED_FETCH_RETRY_MILLISECONDS = 30_000;
 
     /**
-     * Video id -> original title. A null title means the video has no available title,
+     * Video id -> title. A null title means the video has no available title,
      * such as a private video, or the title failed to fetch because of network errors.
      */
     private static final Map<String, CompletableFuture<String>> cache =
@@ -96,6 +100,18 @@ final class OriginalTitleRequest {
 
     @Nullable
     private static String fetchTitle(String videoId) {
+        RestoreOriginalTitlesPatch.TitleType type = RestoreOriginalTitlesPatch.TITLE_TYPE;
+        if (type.usesDeArrow) {
+            String title = DeArrowTitleRequest.fetchTitle(videoId);
+            if (title != null) {
+                return title;
+            }
+        }
+        return type.restoresOriginal ? fetchOriginalTitle(videoId) : null;
+    }
+
+    @Nullable
+    private static String fetchOriginalTitle(String videoId) {
         try {
             String url = "https://www.youtube.com/oembed?format=json&url="
                     + URLEncoder.encode("https://www.youtube.com/watch?v=" + videoId, StandardCharsets.UTF_8.name());
@@ -114,7 +130,7 @@ final class OriginalTitleRequest {
             Logger.printInfo(() -> "Could not fetch original title of: " + videoId, ex);
             retryTimes.put(videoId, System.currentTimeMillis() + FAILED_FETCH_RETRY_MILLISECONDS);
         } catch (Exception ex) {
-            Logger.printException(() -> "fetchTitle failure", ex);
+            Logger.printException(() -> "fetchOriginalTitle failure", ex);
         }
         return null;
     }

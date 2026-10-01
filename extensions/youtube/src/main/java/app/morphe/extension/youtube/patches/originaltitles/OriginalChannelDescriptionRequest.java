@@ -63,6 +63,25 @@ final class OriginalChannelDescriptionRequest {
         return fetch(channelId).getNow(null);
     }
 
+    /**
+     * Does not start fetching the description.
+     *
+     * @return The original description, or null if not fetched or the channel has no description.
+     */
+    @Nullable
+    static String getIfFetched(String channelId) {
+        CompletableFuture<String> future = cache.get(channelId);
+        return future == null ? null : future.getNow(null);
+    }
+
+    /**
+     * @return If the description is being fetched.
+     */
+    static boolean isPending(String channelId) {
+        CompletableFuture<String> future = cache.get(channelId);
+        return future != null && !future.isDone();
+    }
+
     @Nullable
     private static String fetchDescription(String channelId) {
         try {

@@ -33,7 +33,6 @@ import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,7 +46,8 @@ import app.morphe.extension.youtube.patches.utils.ProtoNode;
 import app.morphe.extension.youtube.settings.Settings;
 
 /**
- * Replaces the auto-translated video titles and descriptions with the original titles and descriptions.
+ * Replaces the auto-translated video titles and descriptions with the original titles and descriptions,
+ * or replaces the video titles with the titles submitted to DeArrow.
  * <p>
  * Responses do not include the original title, so it's fetched with {@link OriginalTitleRequest}.
  * The original description of the opened video is fetched with {@link OriginalDescriptionRequest}
@@ -61,8 +61,51 @@ import app.morphe.extension.youtube.settings.Settings;
 @SuppressWarnings("unused")
 public final class RestoreOriginalTitlesPatch {
 
+    public enum TitleType {
+        /**
+         * Titles and descriptions as shown by YouTube.
+         */
+        TRANSLATED(false, false),
+        /**
+         * Original titles and descriptions.
+         */
+        ORIGINAL(true, false),
+        /**
+         * DeArrow titles, or the titles shown by YouTube if DeArrow has no title.
+         * Descriptions as shown by YouTube.
+         */
+        TRANSLATED_DEARROW(false, true),
+        /**
+         * DeArrow titles, or the original titles if DeArrow has no title.
+         * Original descriptions.
+         */
+        ORIGINAL_DEARROW(true, true);
+
+        /**
+         * If the original titles and descriptions are restored.
+         */
+        final boolean restoresOriginal;
+        final boolean usesDeArrow;
+
+        TitleType(boolean restoresOriginal, boolean usesDeArrow) {
+            this.restoresOriginal = restoresOriginal;
+            this.usesDeArrow = usesDeArrow;
+        }
+
+        boolean replacesTitles() {
+            return restoresOriginal || usesDeArrow;
+        }
+    }
+
+    static final TitleType TITLE_TYPE = Settings.RESTORE_ORIGINAL_TITLES_TYPE.get();
+
     private static final String DESCRIPTION_IDENTIFIER = "description_rich_text_list.eml";
     private static final String DESCRIPTION_REDIRECT_PATH = "/redirect";
+
+    /**
+     * Title of the player overlay, which does not include the video id.
+     */
+    private static final String PLAYER_OVERLAY_IDENTIFIER = "player_overlay_video_heading.eml";
 
     /**
      * Header of the channel page, with the first line of the channel description.
@@ -82,7 +125,7 @@ public final class RestoreOriginalTitlesPatch {
                     "/vi/",
                     "/vi_webp/",
                     "video_metadata.eml",
-                    "player_overlay_video_heading.eml",
+                    PLAYER_OVERLAY_IDENTIFIER,
                     DESCRIPTION_IDENTIFIER,
                     CHANNEL_HEADER_IDENTIFIER,
                     CHANNEL_ABOUT_IDENTIFIER
@@ -100,24 +143,29 @@ public final class RestoreOriginalTitlesPatch {
 
     /**
      * Marks the Litho loading texts with the video id of the title that is loading.
+     * The loading texts are laid out again when the title is fetched.
      */
-    private record LoadingTitleSpan(String videoId) {
+    private record LoadingTitleSpan(String videoId) implements LithoRelayoutPatch.RelayoutSpan {
+        @Override
+        public boolean isOutdated() {
+            return !OriginalTitleRequest.isPending(videoId);
+        }
     }
 
     /**
-     * Loading texts of titles that are no longer loading, which are laid out again.
+     * Different videos can have the same title, such as a video and its reupload, and the Litho
+     * texts do not include the video id. So the titles that are not yet fetched when the elements
+     * are parsed are marked with the video id, and the text hook removes the marker.
+     * The marker is made of invisible characters: a start character, and each character of the
+     * video id as 3 digits of base 4.
      */
-    private static final Predicate<CharSequence> LOADED_TITLE_FILTER = text -> {
-        if (!(text instanceof Spanned spanned) || !LOADING_TITLE.toString().contentEquals(text)) {
-            return false;
-        }
-        for (LoadingTitleSpan span : spanned.getSpans(0, spanned.length(), LoadingTitleSpan.class)) {
-            if (!OriginalTitleRequest.isPending(span.videoId())) {
-                return true;
-            }
-        }
-        return false;
-    };
+    private static final char TITLE_MARKER_START = '\u2060'; // Word joiner.
+    private static final char TITLE_MARKER_FIRST_DIGIT = '\u2061'; // Invisible operators U+2061 to U+2064.
+    private static final String VIDEO_ID_CHARACTERS =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+    private static final int VIDEO_ID_LENGTH = 11;
+    private static final int TITLE_MARKER_DIGITS_PER_CHARACTER = 3;
+    private static final int TITLE_MARKER_LENGTH = 1 + VIDEO_ID_LENGTH * TITLE_MARKER_DIGITS_PER_CHARACTER;
 
     /**
      * Minimum length of a translated title that is replaced inside other texts,
@@ -157,9 +205,10 @@ public final class RestoreOriginalTitlesPatch {
             Collections.synchronizedMap(new WeakHashMap<>());
 
     /**
-     * Translated title -> video id.
+     * Translated title -> video ids of the videos with the title.
+     * Different videos can have the same title, such as a video and its reupload.
      */
-    private static final Map<String, String> translatedTitles =
+    private static final Map<String, Set<String>> translatedTitles =
             Collections.synchronizedMap(Utils.createSizeRestrictedMap(1000));
 
     /**
@@ -203,19 +252,22 @@ public final class RestoreOriginalTitlesPatch {
     private static volatile String openedChannelPreview;
 
     /**
-     * Translated description previews whose original description was fetched after the
-     * header was laid out. Previews of descriptions that are not translated are not matched,
-     * as laying them out again does not change them.
+     * Marks the translated description previews of channels whose original description is not
+     * yet fetched. The previews are laid out again when the original description is fetched.
      */
-    private static final Predicate<CharSequence> TRANSLATED_CHANNEL_PREVIEW_FILTER =
-            text -> restoreChannelPreviewText(text) != null;
+    private record ChannelPreviewSpan(String channelId) implements LithoRelayoutPatch.RelayoutSpan {
+        @Override
+        public boolean isOutdated() {
+            return OriginalChannelDescriptionRequest.getIfFetched(channelId) != null;
+        }
+    }
 
     /**
      * Injection point.
      */
     public static void newVideoLoaded(String videoId) {
         try {
-            if (!Settings.RESTORE_ORIGINAL_TITLES.get() || videoId == null || videoId.isEmpty()) {
+            if (!TITLE_TYPE.restoresOriginal || videoId == null || videoId.isEmpty()) {
                 return;
             }
 
@@ -227,11 +279,33 @@ public final class RestoreOriginalTitlesPatch {
     }
 
     /**
+     * Does not wait for the title to be fetched.
+     *
+     * @return The title that replaces the title of the video, or the title if not replaced or not yet fetched.
+     */
+    public static String getTitle(String videoId, String title) {
+        if (!TITLE_TYPE.replacesTitles() || videoId.isEmpty()) {
+            return title;
+        }
+
+        // The title and the video id can be of different videos while the video changes.
+        synchronized (translatedTitles) {
+            Set<String> videoIds = translatedTitles.get(title.trim());
+            if (videoIds == null || !videoIds.contains(videoId)) {
+                return title;
+            }
+        }
+
+        String replacement = OriginalTitleRequest.getIfAvailable(videoId);
+        return replacement == null ? title : replacement;
+    }
+
+    /**
      * Injection point.
      */
     public static byte[] restoreOriginalTitle(byte[] bytes) {
         try {
-            if (!Settings.RESTORE_ORIGINAL_TITLES.get() || !elementSearch.matches(bytes)) {
+            if (!TITLE_TYPE.replacesTitles() || !elementSearch.matches(bytes)) {
                 return bytes;
             }
 
@@ -252,20 +326,23 @@ public final class RestoreOriginalTitlesPatch {
 
             if (identifier != null) {
                 if (identifier.startsWith(DESCRIPTION_IDENTIFIER)) {
-                    return restoreDescription(root, textNodes) ? ProtoNode.write(root) : bytes;
+                    return TITLE_TYPE.restoresOriginal && restoreDescription(root, textNodes)
+                            ? ProtoNode.write(root) : bytes;
                 }
                 if (identifier.startsWith(CHANNEL_HEADER_IDENTIFIER)) {
-                    return restoreChannelHeader(textNodes) ? ProtoNode.write(root) : bytes;
+                    return TITLE_TYPE.restoresOriginal && restoreChannelHeader(textNodes)
+                            ? ProtoNode.write(root) : bytes;
                 }
                 if (identifier.startsWith(CHANNEL_ABOUT_IDENTIFIER)) {
-                    return restoreChannelAbout(root) ? ProtoNode.write(root) : bytes;
+                    return TITLE_TYPE.restoresOriginal && restoreChannelAbout(root)
+                            ? ProtoNode.write(root) : bytes;
                 }
             }
 
             Map<List<ProtoNode>, Set<String>> messageVideoIds = new IdentityHashMap<>();
             findVideoIds(root, findThumbnailVideoIds(textNodes), messageVideoIds);
             boolean modified = restoreVideoTitles(root, messageVideoIds, identifier);
-            modified |= restoreKnownTitles(textNodes);
+            modified |= restoreKnownTitles(textNodes, identifier);
 
             return modified ? ProtoNode.write(root) : bytes;
         } catch (Exception ex) {
@@ -282,7 +359,7 @@ public final class RestoreOriginalTitlesPatch {
      */
     public static CharSequence onLithoTextLoaded(ContextInterface contextInterface, CharSequence text) {
         try {
-            if (!Settings.RESTORE_ORIGINAL_TITLES.get() || text == null) {
+            if (!TITLE_TYPE.replacesTitles() || text == null) {
                 return text;
             }
 
@@ -291,28 +368,34 @@ public final class RestoreOriginalTitlesPatch {
                 return channelPreview;
             }
 
-            if (text.length() > maxTranslatedTitleLength.get()) {
+            CharSequence translatedText = text;
+            String videoId;
+            final int markerStart = findTitleMarker(text);
+            if (markerStart >= 0) {
+                translatedText = text.subSequence(0, markerStart);
+                videoId = decodeTitleMarker(text, markerStart);
+            } else if (text.length() <= maxTranslatedTitleLength.get()) {
+                videoId = findVideoIdOfTitle(text.toString(), null);
+            } else {
                 return text;
             }
-
-            String translatedTitle = text.toString();
-            String videoId = translatedTitles.get(translatedTitle);
             if (videoId == null) {
-                return text;
+                return translatedText;
             }
 
             // Litho texts are loaded on a single thread, so the title is not waited for.
+            String translatedTitle = translatedText.toString();
             String originalTitle = OriginalTitleRequest.getIfAvailable(videoId);
             final boolean loading = originalTitle == null;
             if (loading) {
                 if (!OriginalTitleRequest.isPending(videoId)) {
-                    return text;
+                    return translatedText;
                 }
                 originalTitle = LOADING_TITLE.toString();
-                relayoutWhenFetched(OriginalTitleRequest.fetch(videoId), LOADED_TITLE_FILTER);
+                relayoutWhenFetched(OriginalTitleRequest.fetch(videoId));
             }
-            if (originalTitle.equals(translatedTitle)) {
-                return text;
+            if (originalTitle.equals(translatedTitle.trim())) {
+                return translatedText;
             }
 
             SpannableString replacement = new SpannableString(originalTitle);
@@ -320,7 +403,7 @@ public final class RestoreOriginalTitlesPatch {
                 replacement.setSpan(new LoadingTitleSpan(videoId), 0, replacement.length(),
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
-            copyEntireTextSpans(text, replacement);
+            copyEntireTextSpans(translatedText, replacement);
             return replacement;
         } catch (Exception ex) {
             Logger.printException(() -> "onLithoTextLoaded failure", ex);
@@ -347,27 +430,13 @@ public final class RestoreOriginalTitlesPatch {
     /**
      * Replaces the description preview of the channel header when it's laid out,
      * if the original description was not yet fetched when the element was parsed.
+     * If the original description is still not fetched, the preview is laid out again when fetched.
      *
-     * @return The original description preview, or null if the text is not a translated preview.
+     * @return The original description preview, the translated preview marked to be laid out again,
+     *         or null if the text is not a translated preview or the original description is the same.
      */
     @Nullable
     private static CharSequence restoreChannelPreview(CharSequence text) {
-        String restoredText = restoreChannelPreviewText(text);
-        if (restoredText == null) {
-            return null;
-        }
-
-        SpannableString replacement = new SpannableString(restoredText);
-        copyEntireTextSpans(text, replacement);
-        return replacement;
-    }
-
-    /**
-     * @return The text with the original description, or null if the text is not a translated preview,
-     *         or the original description is not yet fetched or is the same.
-     */
-    @Nullable
-    private static String restoreChannelPreviewText(CharSequence text) {
         if (text.length() > maxTranslatedChannelPreviewLength.get()) {
             return null;
         }
@@ -378,10 +447,26 @@ public final class RestoreOriginalTitlesPatch {
             return null;
         }
 
-        String originalPreview = getOriginalChannelPreview(preview.channelId());
-        return originalPreview == null || originalPreview.equals(preview.translatedDescription())
-                ? null
-                : translatedText.replace(preview.translatedDescription(), originalPreview);
+        String channelId = preview.channelId();
+        String originalPreview = getOriginalChannelPreview(channelId);
+        if (originalPreview == null) {
+            if (!OriginalChannelDescriptionRequest.isPending(channelId)) {
+                return null;
+            }
+            SpannableString pendingPreview = new SpannableString(text);
+            pendingPreview.setSpan(new ChannelPreviewSpan(channelId), 0, pendingPreview.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            relayoutWhenFetched(OriginalChannelDescriptionRequest.fetch(channelId));
+            return pendingPreview;
+        }
+        if (originalPreview.equals(preview.translatedDescription())) {
+            return null;
+        }
+
+        SpannableString replacement = new SpannableString(
+                translatedText.replace(preview.translatedDescription(), originalPreview));
+        copyEntireTextSpans(text, replacement);
+        return replacement;
     }
 
     /**
@@ -392,7 +477,7 @@ public final class RestoreOriginalTitlesPatch {
      */
     public static void restoreOriginalTitle(TextView view, String videoId) {
         try {
-            if (!Settings.RESTORE_ORIGINAL_TITLES.get() || view == null || videoId == null) {
+            if (!TITLE_TYPE.replacesTitles() || view == null || videoId == null) {
                 return;
             }
 
@@ -445,7 +530,7 @@ public final class RestoreOriginalTitlesPatch {
 
             @Override
             public void onTextChanged(CharSequence text, int start, int before, int count) {
-                if (!Settings.RESTORE_ORIGINAL_TITLES.get()) {
+                if (!TITLE_TYPE.replacesTitles()) {
                     return;
                 }
 
@@ -454,7 +539,7 @@ public final class RestoreOriginalTitlesPatch {
                     return;
                 }
 
-                String videoId = translatedTitles.get(title);
+                String videoId = findVideoIdOfTitle(title, null);
                 if (videoId == null) {
                     titleViewVideoIds.remove(view);
                     return;
@@ -499,19 +584,18 @@ public final class RestoreOriginalTitlesPatch {
     }
 
     /**
-     * Loads the Litho texts that match the filter again when the request is done, such as
-     * the texts that show the loading title, or the translated description preview of a channel.
+     * Lays out the outdated Litho texts again when the request is done, such as the texts
+     * that show the loading title, or the translated description preview of a channel.
      * Each request lays out the texts once, including requests made again after a failure.
      */
-    private static void relayoutWhenFetched(CompletableFuture<String> request,
-                                            Predicate<CharSequence> textFilter) {
+    private static void relayoutWhenFetched(CompletableFuture<String> request) {
         if (!relayoutRequests.add(request)) {
             return;
         }
 
         request.thenRun(() -> {
             relayoutRequests.remove(request);
-            LithoRelayoutPatch.relayoutViewsShowingText(textFilter);
+            LithoRelayoutPatch.relayoutOutdatedTexts();
         });
     }
 
@@ -560,8 +644,7 @@ public final class RestoreOriginalTitlesPatch {
 
         String originalPreview = getOriginalChannelPreview(channelId);
         if (originalPreview == null) {
-            relayoutWhenFetched(OriginalChannelDescriptionRequest.fetch(channelId),
-                    TRANSLATED_CHANNEL_PREVIEW_FILTER);
+            relayoutWhenFetched(OriginalChannelDescriptionRequest.fetch(channelId));
             return false;
         }
         if (originalPreview.equals(translatedPreview)) {
@@ -773,8 +856,106 @@ public final class RestoreOriginalTitlesPatch {
     }
 
     private static void putTranslatedTitle(String translatedTitle, String videoId) {
-        translatedTitles.put(translatedTitle, videoId);
+        synchronized (translatedTitles) {
+            Set<String> videoIds = translatedTitles.get(translatedTitle);
+            if (videoIds == null) {
+                videoIds = new HashSet<>();
+                translatedTitles.put(translatedTitle, videoIds);
+            }
+            videoIds.add(videoId);
+        }
         maxTranslatedTitleLength.accumulateAndGet(translatedTitle.length(), Math::max);
+    }
+
+    /**
+     * @param preferredVideoId Video used if different videos have the title, such as the opened video.
+     * @return The video id of the translated title, or null if the title is unknown,
+     *         or different videos have the title and none is the preferred video.
+     */
+    @Nullable
+    private static String findVideoIdOfTitle(String translatedTitle, @Nullable String preferredVideoId) {
+        synchronized (translatedTitles) {
+            Set<String> videoIds = translatedTitles.get(translatedTitle);
+            if (videoIds == null) {
+                return null;
+            }
+            if (videoIds.size() == 1) {
+                return videoIds.iterator().next();
+            }
+            return preferredVideoId != null && videoIds.contains(preferredVideoId)
+                    ? preferredVideoId
+                    : null;
+        }
+    }
+
+    /**
+     * @return The title with the marker of the video id.
+     */
+    private static String addTitleMarker(String title, String videoId) {
+        StringBuilder builder = new StringBuilder(title.length() + TITLE_MARKER_LENGTH)
+                .append(title)
+                .append(TITLE_MARKER_START);
+        for (int i = 0; i < VIDEO_ID_LENGTH; i++) {
+            final int value = VIDEO_ID_CHARACTERS.indexOf(videoId.charAt(i));
+            for (int shift = 2 * (TITLE_MARKER_DIGITS_PER_CHARACTER - 1); shift >= 0; shift -= 2) {
+                builder.append((char) (TITLE_MARKER_FIRST_DIGIT + ((value >> shift) & 3)));
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
+     * @return The index of the title marker at the end of the text, or -1 if the text has no marker.
+     */
+    private static int findTitleMarker(CharSequence text) {
+        final int markerStart = text.length() - TITLE_MARKER_LENGTH;
+        return markerStart >= 0 && text.charAt(markerStart) == TITLE_MARKER_START
+                ? markerStart
+                : -1;
+    }
+
+    /**
+     * @return The video id of the title marker, or null if the marker is not valid.
+     */
+    @Nullable
+    private static String decodeTitleMarker(CharSequence text, int markerStart) {
+        char[] videoId = new char[VIDEO_ID_LENGTH];
+        int index = markerStart + 1;
+        for (int i = 0; i < VIDEO_ID_LENGTH; i++) {
+            int value = 0;
+            for (int digit = 0; digit < TITLE_MARKER_DIGITS_PER_CHARACTER; digit++) {
+                final int digitValue = text.charAt(index++) - TITLE_MARKER_FIRST_DIGIT;
+                if (digitValue < 0 || digitValue > 3) {
+                    return null;
+                }
+                value = (value << 2) | digitValue;
+            }
+            videoId[i] = VIDEO_ID_CHARACTERS.charAt(value);
+        }
+        return new String(videoId);
+    }
+
+    private static String removeTitleMarker(String text) {
+        final int markerStart = findTitleMarker(text);
+        return markerStart < 0 ? text : text.substring(0, markerStart);
+    }
+
+    /**
+     * Marks the texts that are the title with the video id, so the text hook finds the video
+     * of the title. Texts that include the title, such as the accessibility label, are not marked.
+     *
+     * @return If any text was marked.
+     */
+    private static boolean markTitle(List<ProtoNode> textNodes, String translatedTitle, String videoId) {
+        boolean marked = false;
+        for (ProtoNode node : textNodes) {
+            String nodeText = node.getText();
+            if (findTitleMarker(nodeText) < 0 && nodeText.trim().equals(translatedTitle)) {
+                node.setText(addTitleMarker(nodeText, videoId));
+                marked = true;
+            }
+        }
+        return marked;
     }
 
     private static Set<String> findThumbnailVideoIds(List<ProtoNode> textNodes) {
@@ -875,7 +1056,7 @@ public final class RestoreOriginalTitlesPatch {
         List<ProtoNode> textNodes = ProtoNode.textNodes(message);
         Set<String> texts = new LinkedHashSet<>();
         for (ProtoNode node : textNodes) {
-            String text = node.getText().trim();
+            String text = removeTitleMarker(node.getText()).trim();
             if (text.contains(PLAYLIST_URL)) {
                 return false;
             }
@@ -897,13 +1078,16 @@ public final class RestoreOriginalTitlesPatch {
             }
         }
 
-        String originalTitle = OriginalTitleRequest.getIfAvailable(videoId);
-        if (translatedTitle.equals(originalTitle)) {
-            return false;
-        }
-
+        // Titles are saved even if not replaced, so titles of different videos are known.
         putTranslatedTitle(translatedTitle, videoId);
-        return originalTitle != null && replaceTitle(textNodes, translatedTitle, originalTitle, label);
+
+        String originalTitle = OriginalTitleRequest.getIfAvailable(videoId);
+        if (originalTitle == null) {
+            // The text hook replaces the title when the element is laid out.
+            return OriginalTitleRequest.isPending(videoId) && markTitle(textNodes, translatedTitle, videoId);
+        }
+        return !translatedTitle.equals(originalTitle)
+                && replaceTitle(textNodes, translatedTitle, originalTitle, label);
     }
 
     /**
@@ -912,13 +1096,21 @@ public final class RestoreOriginalTitlesPatch {
      *
      * @return If any title was replaced.
      */
-    private static boolean restoreKnownTitles(List<ProtoNode> textNodes) {
+    private static boolean restoreKnownTitles(List<ProtoNode> textNodes, @Nullable String identifier) {
         boolean modified = false;
+        // The player overlay shows the title of the opened video.
+        String preferredVideoId = identifier != null && identifier.startsWith(PLAYER_OVERLAY_IDENTIFIER)
+                ? openedVideoId
+                : null;
 
         for (ProtoNode node : textNodes) {
-            String text = node.getText().trim();
+            String nodeText = node.getText();
+            if (findTitleMarker(nodeText) >= 0) {
+                continue;
+            }
+            String text = nodeText.trim();
             String videoId = text.length() >= MIN_TITLE_LENGTH
-                    ? translatedTitles.get(text)
+                    ? findVideoIdOfTitle(text, preferredVideoId)
                     : null;
             if (videoId == null) {
                 continue;
@@ -1025,7 +1217,7 @@ public final class RestoreOriginalTitlesPatch {
         final int[] titlePath;
         if (identifier.startsWith("video_metadata.eml")) {
             titlePath = new int[]{1019, 1, 1};
-        } else if (identifier.startsWith("player_overlay_video_heading.eml")) {
+        } else if (identifier.startsWith(PLAYER_OVERLAY_IDENTIFIER)) {
             titlePath = new int[]{370844319, 3, 1};
         } else if (identifier.startsWith("reel_player_overlay.eml")) {
             titlePath = new int[]{1080, 1, 1};
@@ -1035,7 +1227,7 @@ public final class RestoreOriginalTitlesPatch {
 
         for (ProtoNode node : textNodes) {
             if (node.pathEndsWith(titlePath)) {
-                String title = node.getText().trim();
+                String title = removeTitleMarker(node.getText()).trim();
                 return title.isEmpty() ? null : title;
             }
         }
@@ -1064,7 +1256,7 @@ public final class RestoreOriginalTitlesPatch {
 
         for (ProtoNode node : textNodes) {
             String nodeText = node.getText();
-            String text = nodeText.trim();
+            String text = removeTitleMarker(nodeText).trim();
             if (text.equals(translatedTitle)) {
                 node.setText(originalTitle);
             } else if (text.equals(label)) {
