@@ -34,7 +34,8 @@ val playbackBufferPatch = bytecodePatch( // TODO: Make this an internal patch of
 
     execute {
         PreferenceScreen.VIDEO.addPreferences(
-            ListPreference("morphe_playback_buffer_size")
+            ListPreference("morphe_playback_buffer_size"),
+            ListPreference("morphe_playback_buffer_memory")
         )
 
         ShouldContinueLoadingFingerprint.let {

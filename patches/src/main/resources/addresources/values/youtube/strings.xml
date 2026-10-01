@@ -1342,10 +1342,13 @@ Tap here to open DeArrow.ajay.app"</string>
 
     <!-- video.buffer.playbackBufferPatch -->
     <string name="morphe_playback_buffer_size_title">Playback buffer size</string>
+    <string name="morphe_playback_buffer_size_summary">Higher values increase buffer length ahead of playback, but increase memory and data usage</string>
     <string name="morphe_playback_buffer_size_entry_default">Default</string>
     <string name="morphe_playback_buffer_size_entry_low">Low</string>
     <string name="morphe_playback_buffer_size_entry_medium">Medium</string>
     <string name="morphe_playback_buffer_size_entry_maximum">Maximum</string>
+    <string name="morphe_playback_buffer_memory_title">Playback buffer memory</string>
+    <string name="morphe_playback_buffer_memory_summary">Memory the buffer can use. Higher values help high quality video, but can make the app crash on devices with little memory</string>
 
     <!-- video.quality.rememberVideoQualityPatch -->
     <!-- Translations should match the language used in 'morphe_custom_playback_speeds_auto'. -->

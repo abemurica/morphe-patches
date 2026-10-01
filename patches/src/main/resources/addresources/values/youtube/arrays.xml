@@ -598,6 +598,16 @@
         <item>MEDIUM</item>
         <item>MAXIMUM</item>
     </string-array>
+    <string-array name="morphe_playback_buffer_memory_entries" translatable="false">
+        <item>128 MB</item>
+        <item>256 MB</item>
+        <item>512 MB</item>
+    </string-array>
+    <string-array name="morphe_playback_buffer_memory_entry_values" translatable="false">
+        <item>MB_128</item>
+        <item>MB_256</item>
+        <item>MB_512</item>
+    </string-array>
 
     <!-- video.quality.rememberVideoQualityPatch -->
     <string-array name="morphe_video_quality_default_entries">
