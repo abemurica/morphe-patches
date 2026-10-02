@@ -1075,9 +1075,9 @@ Ograniczenie: Jeśli opcja \"Przywróć stary pasek akcji filmu\" jest wyłączo
   <!-- layout.originaltitles.restoreOriginalTitlesPatch -->
   <string name="morphe_restore_original_titles_title">Przywróć oryginalne tytuły</string>
   <string name="morphe_restore_original_titles_type_entry_translated">Przetłumaczone</string>
-  <string name="morphe_restore_original_titles_type_entry_original">Oryginał</string>
-  <string name="morphe_restore_original_titles_type_entry_translated_dearrow">Przetłumaczone przez DeArrow</string>
-  <string name="morphe_restore_original_titles_type_entry_original_dearrow">Oryginał z DeArrow</string>
+  <string name="morphe_restore_original_titles_type_entry_original">Oryginalne</string>
+  <string name="morphe_restore_original_titles_type_entry_translated_dearrow">Przetłumaczone z DeArrow</string>
+  <string name="morphe_restore_original_titles_type_entry_original_dearrow">Oryginalne z DeArrow</string>
   <string name="morphe_restore_original_titles_loading">Wczytywanie tytułu…</string>
   <!-- layout.feedrefresh.disableAutoFeedRefreshPatch -->
   <string name="morphe_disable_auto_feed_refresh_title">Wyłącz automatyczne odświeżanie</string>

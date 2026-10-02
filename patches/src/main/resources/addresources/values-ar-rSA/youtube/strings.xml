@@ -845,7 +845,7 @@ Mistral Nemo هو الخيار الأرخص، بينما توفر Gemma 4 أعل
   <string name="morphe_hide_player_flyout_watch_in_vr_title">إخفاء قائمة المشاهدة في الوضع الافتراضي</string>
   <!-- layout.hide.autoplaypreview.hideAutoplayPreviewPatch -->
   <string name="morphe_hide_autoplay_preview_title">إخفاء عرض التشغيل التلقائي</string>
-  <string name="morphe_hide_autoplay_preview_summary">يخفي عرض مشاهدة الفيديو التالي بـملء الشاشة قبل بدء التشغيل التلقائي</string>
+  <string name="morphe_hide_autoplay_preview_summary">يخفي عرض مشاهدة الفيديو التالي بملء الشاشة قبل بدء التشغيل التلقائي</string>
   <!-- layout.buttons.overlay.hidePlayerOverlayButtonsPatch -->
   <string name="morphe_overlay_buttons_screen_title">أزرار الواجهة</string>
   <string name="morphe_overlay_buttons_screen_summary">اختر الأزرار التي تظهر فوق مشغل الفيديو</string>
@@ -981,7 +981,7 @@ Mistral Nemo هو الخيار الأرخص، بينما توفر Gemma 4 أعل
   <string name="morphe_fullscreen_video_scale_button_title">عرض زر مقياس الفيديو</string>
   <string name="morphe_fullscreen_video_scale_button_summary">انقر للتنقل بين الوضع الافتراضي، التمديد، والتكبير</string>
   <string name="morphe_fullscreen_video_scale_button_fullscreen_only_title">العرض في وضع ملء الشاشة فقط</string>
-  <string name="morphe_fullscreen_video_scale_button_fullscreen_only_summary">إخفاء زر ضبط حجم الفيديو في مشغل الوضع الرأسي</string>
+  <string name="morphe_fullscreen_video_scale_button_fullscreen_only_summary">إخفاء زر ضبط مقياس الفيديو في مشغل الوضع الرأسي</string>
   <!-- layout.player.buttons.muteVideoButtonPatch -->
   <string name="morphe_mute_video_button_title">عرض زر كتم الصوت</string>
   <!-- layout.player.overlay.customPlayerOverlayOpacityPatch -->
