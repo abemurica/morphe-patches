@@ -1,3 +1,10 @@
+## [1.46.0-dev.5](https://github.com/abemurica/morphe-patches/compare/v1.46.0-dev.4...v1.46.0-dev.5) (2026-10-05)
+
+### ✨ New Features
+
+* **YouTube - Add to queue:** Add native queue setting ([5a1f586](https://github.com/abemurica/morphe-patches/commit/5a1f5860c86bb7024f338bf02d8ef607f997b612))
+* **YouTube - Debugging:** Add queue activity logging ([5d43a71](https://github.com/abemurica/morphe-patches/commit/5d43a714a185ed7cb8f178d44ac05d043816084f))
+
 ## [1.46.0-dev.4](https://github.com/abemurica/morphe-patches/compare/v1.46.0-dev.3...v1.46.0-dev.4) (2026-10-05)
 
 ### 🐛 Bug Fixes
