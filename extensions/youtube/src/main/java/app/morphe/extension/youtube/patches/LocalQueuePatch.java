@@ -59,6 +59,7 @@ public final class LocalQueuePatch {
     private static final long ADVANCE_GUARD_MILLISECONDS = 5000;
 
     private static final long END_OF_VIDEO_TOLERANCE_MILLISECONDS = 5000;
+    private static final long NATIVE_FALLBACK_DELAY_MILLISECONDS = 2500;
 
     public static final int CONNECTION_TIMEOUT_MILLISECONDS = 5000;
 
@@ -101,6 +102,7 @@ public final class LocalQueuePatch {
     }
 
     public static List<Item> getItems() {
+        NativeQueuePatch.reconcile();
         synchronized (LOCK) {
             load();
             return new ArrayList<>(items);
@@ -108,6 +110,7 @@ public final class LocalQueuePatch {
     }
 
     public static int size() {
+        NativeQueuePatch.reconcile();
         synchronized (LOCK) {
             load();
             return items.size();
@@ -165,6 +168,14 @@ public final class LocalQueuePatch {
         }
     }
 
+    @Nullable
+    static String peekFirstVideoId() {
+        synchronized (LOCK) {
+            load();
+            return items.isEmpty() ? null : items.get(0).videoId;
+        }
+    }
+
     public static void remove(String videoId) {
         synchronized (LOCK) {
             load();
@@ -218,7 +229,7 @@ public final class LocalQueuePatch {
      */
     public static boolean shouldCancelNavigation(Enum<?> navigationIntent) {
         try {
-            if (!isEnabled()) {
+            if (!isEnabled() || NativeQueuePatch.isEnabled()) {
                 return false;
             }
 
@@ -258,6 +269,18 @@ public final class LocalQueuePatch {
             // Ads and Shorts also report the ended state, only the end of the video itself counts.
             final long videoLength = VideoInformation.getVideoLength();
             if (videoLength > 0 && VideoInformation.getVideoTime() + END_OF_VIDEO_TOLERANCE_MILLISECONDS < videoLength) {
+                return false;
+            }
+
+            if (NativeQueuePatch.isEnabled()) {
+                // YouTube normally starts the next video itself. Start it here if that did not happen.
+                final String endedVideoId = VideoInformation.getVideoId();
+                Utils.runOnMainThreadDelayed(() -> {
+                    if (endedVideoId.equals(VideoInformation.getVideoId()) && size() > 0
+                            && !isAdvanceGuardActive()) {
+                        advance();
+                    }
+                }, NATIVE_FALLBACK_DELAY_MILLISECONDS);
                 return false;
             }
 
