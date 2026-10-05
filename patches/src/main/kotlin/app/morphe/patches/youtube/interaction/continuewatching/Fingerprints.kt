@@ -10,6 +10,7 @@ package app.morphe.patches.youtube.interaction.continuewatching
 import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.InstructionLocation.MatchAfterImmediately
 import app.morphe.patcher.InstructionLocation.MatchAfterWithin
+import app.morphe.patcher.anyInstruction
 import app.morphe.patcher.fieldAccess
 import app.morphe.patcher.methodCall
 import app.morphe.patcher.opcode
@@ -38,7 +39,11 @@ internal object AutoplayInactivityLimitFingerprint : Fingerprint(
             location = MatchAfterImmediately()
         ),
         opcode(Opcode.CMP_LONG, location = MatchAfterWithin(2)),
-        opcode(Opcode.IF_LTZ, location = MatchAfterImmediately()),
+        anyInstruction(
+            opcode(Opcode.IF_LTZ),
+            opcode(Opcode.IF_GEZ), // 21.40+
+            location = MatchAfterImmediately()
+        ),
         methodCall(
             opcode = Opcode.INVOKE_STATIC,
             definingClass = "Landroid/animation/ObjectAnimator;",
