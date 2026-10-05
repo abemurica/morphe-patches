@@ -148,3 +148,18 @@ internal object SingularGeneratedExtensionFingerprint : Fingerprint(
     )
 )
 
+
+/**
+ * The navigable playback queue's method that resolves which queue entry a navigation request goes to.
+ */
+internal object NavigableQueueResolveNavigationFingerprint : Fingerprint(
+    classFingerprint = Fingerprint(
+        filters = listOf(
+            string("Navigation committed to a video that is not expected by the navigable queue"),
+            string("Navigation committed to an action that is not expected by the navigable queue")
+        )
+    ),
+    accessFlags = listOf(AccessFlags.PROTECTED, AccessFlags.FINAL),
+    returnType = "L",
+    parameters = listOf("L")
+)

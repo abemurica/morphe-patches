@@ -597,6 +597,8 @@ Info: May not work on live streams"</string>
     <string name="morphe_swap_save_and_queue_actions_summary">Tap for queue options, tap and hold to save to Watch later</string>
     <string name="morphe_local_queue_title">Active queue</string>
     <string name="morphe_local_queue_summary">Queues videos on this device and plays the next one when the current video ends</string>
+    <string name="morphe_native_queue_title">Native queue</string>
+    <string name="morphe_native_queue_summary">Hands queued videos to YouTube so the queue keeps playing with the screen off</string>
     <string name="morphe_local_queue_sheet_title">Queue</string>
     <string name="morphe_local_queue_open">Queue (%d)</string>
     <string name="morphe_local_queue_clear">Clear</string>
