@@ -1,3 +1,23 @@
+## [1.46.0-dev.4](https://github.com/abemurica/morphe-patches/compare/v1.46.0-dev.3...v1.46.0-dev.4) (2026-10-05)
+
+### 🐛 Bug Fixes
+
+* **YouTube - Disable continue watching prompt:** Fix patching on 21.40 ([789bd1c](https://github.com/abemurica/morphe-patches/commit/789bd1c5599b1d3f1c3c456ecde830c22c0f7abe))
+
+### ✨ New Features
+
+* Add Backdrops and Battery Guru premium-unlock patches ([addd92b](https://github.com/abemurica/morphe-patches/commit/addd92bbde338a6ab482abf792b6507f11c2f630))
+* Brand the fork as AbeMurica's patches ([6dfef9a](https://github.com/abemurica/morphe-patches/commit/6dfef9a63d0268e41abace3e8159d4ff950fa181))
+* **YouTube - Add to queue:** Add on-device active queue setting ([bea522a](https://github.com/abemurica/morphe-patches/commit/bea522abb00517ca89236d8aa8ef6b4da57d2f54))
+* **YouTube - Disable continue watching prompt:** Add option to stop autoplay pausing after inactivity ([098e826](https://github.com/abemurica/morphe-patches/commit/098e826980dab7436e057a4b11ca01e320a3f01f)), closes [#684](https://github.com/abemurica/morphe-patches/issues/684)
+* **YouTube - Disable video codecs:** Add "Force VP9 codec" setting ([487b9b5](https://github.com/abemurica/morphe-patches/commit/487b9b57d5e668d9906ecaae57fe05e2c32420e7))
+* **YouTube - Playback buffer:** Use buffer levels and add playback buffer memory option ([8b1be93](https://github.com/abemurica/morphe-patches/commit/8b1be9359f1d28eb19495399caf9bc4090f663da))
+* **YouTube:** Add "Force system font" patch ([bf89789](https://github.com/abemurica/morphe-patches/commit/bf8978976a01677ce9df5abf6a672795b5672631))
+
+### 🚀 Updated App Support
+
+* **YouTube Music:** Add experimental support for `9.40.51` ([60f840d](https://github.com/abemurica/morphe-patches/commit/60f840d6b003ba0f5febc037143fe28748e6e899))
+
 ## [1.46.0-dev.3](https://github.com/MorpheApp/morphe-patches/compare/v1.46.0-dev.2...v1.46.0-dev.3) (2026-10-04)
 
 ### 🐛 Bug Fixes

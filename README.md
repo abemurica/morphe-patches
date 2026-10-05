@@ -35,9 +35,9 @@ All modifications made by Morphe, along with their dates, can be found in the Gi
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.46.0-dev.3](https://github.com/MorpheApp/morphe-patches/releases/tag/v1.46.0-dev.3)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;165 patches total
+> **[v1.46.0-dev.4](https://github.com/abemurica/morphe-patches/releases/tag/v1.46.0-dev.4)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;170 patches total
 <details>
-<summary>📦 YouTube&nbsp;&nbsp;•&nbsp;&nbsp;92 patches</summary>
+<summary>📦 YouTube&nbsp;&nbsp;•&nbsp;&nbsp;94 patches</summary>
 <br>
 
 **🎯 Supported versions:**
@@ -66,6 +66,7 @@ All modifications made by Morphe, along with their dates, can be found in the Gi
 | [Disable QUIC protocol](#disable-quic-protocol) | Adds an option to disable QUIC (Quick UDP Internet Connections) network protocol. |  |
 | [Disable Shorts resuming on startup](#disable-shorts-resuming-on-startup) | Adds an option to disable Shorts from resuming on app startup when Shorts were last being watched. |  |
 | [Disable auto feed refresh](#disable-auto-feed-refresh) | Adds an option to stop feeds from refreshing automatically after they become outdated. |  |
+| [Disable continue watching prompt](#disable-continue-watching-prompt) | Adds an option to keep autoplay going instead of pausing with a Continue watching prompt after a period of inactivity. |  |
 | [Disable double tap actions](#disable-double-tap-actions) | Adds an option to disable player double tap gestures. |  |
 | [Disable fullscreen gestures](#disable-fullscreen-gestures) | Adds options to selectively disable gestures for entering and exiting fullscreen mode, and to disable pinch-to-zoom. |  |
 | [Disable haptic feedback](#disable-haptic-feedback) | Adds an option to disable haptic feedback in the player for various actions. |  |
@@ -75,13 +76,14 @@ All modifications made by Morphe, along with their dates, can be found in the Gi
 | [Disable rolling number animations](#disable-rolling-number-animations) | Adds an option to disable rolling number animations of video view count, user likes, and upload time. |  |
 | [Disable scrolling speed limit](#disable-scrolling-speed-limit) | Adds an option to remove limits of how fast the home and subscription feed can be scrolled. |  |
 | [Disable sign in to TV popup](#disable-sign-in-to-tv-popup) | Adds options to disable the popups asking to sign into or connect to a TV on the same local network. |  |
-| [Disable video codecs](#disable-video-codecs) | Adds options to disable or force HDR, and to disable VP9 codecs. |  |
+| [Disable video codecs](#disable-video-codecs) | Adds options to disable or force HDR, and to disable VP9 or AV1 codecs. |  |
 | [Double tap to seek](#double-tap-to-seek) | Adds additional double-tap to seek values to the YouTube settings menu. |  |
 | [Downloads](#downloads) | Adds support to download videos with an external downloader app using the in-app download button or a video player action button. |  |
 | [Enable debugging](#enable-debugging) | Adds options for debugging and exporting Morphe logs to the clipboard. |  |
 | [Exit fullscreen mode](#exit-fullscreen-mode) | Adds options to automatically exit fullscreen mode when a video reaches the end. |  |
 | [Force fullscreen landscape](#force-fullscreen-landscape) | Adds an option to rotate the player to landscape when entering fullscreen mode on tablets and other large screen devices. |  |
 | [Force original audio](#force-original-audio) | Adds an option to always use the original audio track. |  |
+| [Force system font](#force-system-font) | Adds an option to show the app with the device system font instead of YouTube Sans. |  |
 | [Fullscreen video scale](#fullscreen-video-scale) | Adds options to stretch or zoom videos to fill the screen in fullscreen mode. |  |
 | [GmsCore support](#gmscore-support) | Allows the app to work without root by using a different package name when patched using a GmsCore instead of Google Play Services. |  |
 | [Hide Shorts components](#hide-shorts-components) | Adds options to hide components related to Shorts. | • Hide Shorts app shortcut<br>• Hide Shorts widget |
@@ -148,7 +150,7 @@ All modifications made by Morphe, along with their dates, can be found in the Gi
 
 **🎯 Supported versions:**
 
-| 🧪&nbsp;9.39.52 | 🧪&nbsp;9.38.51 | 🧪&nbsp;9.37.54 | 9.20.53 | 9.15.51 |
+| 🧪&nbsp;9.40.51 | 🧪&nbsp;9.39.52 | 🧪&nbsp;9.38.51 | 9.20.53 | 9.15.51 |
 | :---: | :---: | :---: | :---: | :---: |
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
@@ -239,13 +241,44 @@ All modifications made by Morphe, along with their dates, can be found in the Gi
 </details>
 
 <details>
-<summary>🌐 Universal&nbsp;&nbsp;•&nbsp;&nbsp;5 patches</summary>
+<summary>📦 Backdrops&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 6.1.2 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Unlock Premium](#unlock-premium) |  |  |
+
+</details>
+
+<details>
+<summary>📦 Battery Guru&nbsp;&nbsp;•&nbsp;&nbsp;1 patch</summary>
+<br>
+
+**🎯 Supported versions:**
+
+| 2.5.0.7 |
+| :---: |
+
+| 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
+|----------|----------------|-----------|
+| [Unlock Premium](#unlock-premium) | Unlocks premium and marks the yearly plan as purchased. |  |
+
+</details>
+
+<details>
+<summary>🌐 Universal&nbsp;&nbsp;•&nbsp;&nbsp;6 patches</summary>
 <br>
 
 | 💊&nbsp;Patch | 📜&nbsp;Description | ⚙️&nbsp;Options |
 |----------|----------------|-----------|
 | [Change installer source](#change-installer-source) | Spoofs the installer source so the app appears to be installed from an app store. | • Spoofed package installer name |
 | [Clone app](#clone-app) | Changes the app package name to allow installing the same app multiple times. By default ".morphe" is appended to the package name. Each cloned install must use a unique package name. Cloning does not work with all apps and using this patch may cause app crashes or other unexpected behavior. | • Package name<br>• Update permissions<br>• Update providers |
+| [Disable Firebase(Google) Analytics](#disable-firebase-google-analytics) |  |  |
 | [Disable Play Store updates](#disable-play-store-updates) | Disables Play Store updates by setting the version code to the maximum allowed. This patch may cause unexpected issues with some apps and does not work if the app is installed by root mounting |  |
 | [Override certificate pinning](#override-certificate-pinning) | Overrides certificate pinning, allowing to inspect traffic via a proxy. |  |
 | [Spoof signature](#spoof-signature) | Spoofs the package signature of the original APK. |  |
