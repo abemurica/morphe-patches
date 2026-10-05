@@ -27,5 +27,8 @@ val enableDebuggingPatch = enableDebuggingPatch(
     hookLongFeatureFlag = { !is_20_40_or_greater || is_20_41_or_greater},
     hookDoubleFeatureFlag = { !is_20_40_or_greater || is_20_41_or_greater},
     preferenceScreen = PreferenceScreen.MISC,
-    additionalDebugPreferences = listOf(SwitchPreference("morphe_debug_protobuffer", summary = true))
+    additionalDebugPreferences = listOf(
+        SwitchPreference("morphe_debug_protobuffer", summary = true),
+        SwitchPreference("morphe_queue_debug", summary = true)
+    )
 )

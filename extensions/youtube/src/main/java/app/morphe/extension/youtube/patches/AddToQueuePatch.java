@@ -137,6 +137,8 @@ public final class AddToQueuePatch {
      * Injection point.
      */
     public static Runnable replaceButtonRunnable(Runnable original) {
+        original = QueueDebugPatch.wrapRunnable(original, FlyoutUtils.getCurrentButtonName());
+
         if (!Settings.QUEUE_OVERRIDE_FLYOUT_MENU.get()) {
             return original;
         }
@@ -155,6 +157,8 @@ public final class AddToQueuePatch {
      */
     public static boolean replaceOnItemClick(Object object) {
         try {
+            QueueDebugPatch.onContextClick(object);
+
             if (!Settings.QUEUE_OVERRIDE_FLYOUT_MENU.get()) {
                 return false;
             }

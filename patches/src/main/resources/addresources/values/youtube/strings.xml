@@ -1361,6 +1361,10 @@ Tap here to open DeArrow.ajay.app"</string>
     <string name="morphe_external_browser_title">Open links in browser</string>
     <string name="morphe_external_browser_summary">Opens links in an external browser instead of the in-app browser</string>
 
+    <!-- misc.debugging.queueDebugPatch -->
+    <string name="morphe_queue_debug_title">Log queue activity</string>
+    <string name="morphe_queue_debug_summary">Logs flyout menus, commands and queue changes. Use together with Export debug logs</string>
+
     <!-- video.buffer.playbackBufferPatch -->
     <string name="morphe_playback_buffer_size_title">Playback buffer size</string>
     <string name="morphe_playback_buffer_size_summary">Higher values increase buffer length ahead of playback, but increase memory and data usage</string>

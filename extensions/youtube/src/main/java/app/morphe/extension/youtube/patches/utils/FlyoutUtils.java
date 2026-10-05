@@ -56,6 +56,7 @@ import app.morphe.extension.shared.spoof.SpoofAppVersionPatch;
 import app.morphe.extension.shared.theme.ThemeUtils;
 import app.morphe.extension.shared.ui.Dim;
 import app.morphe.extension.youtube.patches.PipButtonPatch;
+import app.morphe.extension.youtube.patches.QueueDebugPatch;
 import app.morphe.extension.youtube.patches.SaveToWatchLaterPatch;
 import app.morphe.extension.youtube.patches.VersionCheckPatch;
 import app.morphe.extension.youtube.patches.VideoInformation;
@@ -765,6 +766,8 @@ public final class FlyoutUtils {
      * Injection point.
      */
     public static void setCurrentButtonInfo(@Nullable Enum<?> buttonEnum, @Nullable Object buttonInfo) {
+        QueueDebugPatch.onFlyoutButton(buttonEnum, buttonInfo);
+
         if (buttonEnum == null) {
             return;
         }
