@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-10-06T00:31:01",
-  "description": "## [1.46.0-dev.6](https://github.com/abemurica/morphe-patches/compare/v1.46.0-dev.5...v1.46.0-dev.6) (2026-10-06)\n\n### ✨ New Features\n\n* **YouTube - Add to queue:** Redesign the queue sheet with drag reorder and swipe to remove ([f234d55](https://github.com/abemurica/morphe-patches/commit/f234d55b8384c595c5fb8376c088954c81e59d45))",
-  "download_url": "https://github.com/abemurica/morphe-patches/releases/download/v1.46.0-dev.6/patches-1.46.0-dev.6.mpp",
+  "created_at": "2026-10-06T00:47:19",
+  "description": "## [1.46.0-dev.7](https://github.com/abemurica/morphe-patches/compare/v1.46.0-dev.6...v1.46.0-dev.7) (2026-10-06)\n\n### 🐛 Bug Fixes\n\n* **YouTube - Add to queue:** Show Added to queue after adding a video ([9afe387](https://github.com/abemurica/morphe-patches/commit/9afe387b5dc946cd078412ac78231a36a49e072d))",
+  "download_url": "https://github.com/abemurica/morphe-patches/releases/download/v1.46.0-dev.7/patches-1.46.0-dev.7.mpp",
   "signature_download_url": "",
-  "version": "1.46.0-dev.6"
+  "version": "1.46.0-dev.7"
 }

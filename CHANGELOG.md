@@ -1,3 +1,9 @@
+## [1.46.0-dev.7](https://github.com/abemurica/morphe-patches/compare/v1.46.0-dev.6...v1.46.0-dev.7) (2026-10-06)
+
+### 🐛 Bug Fixes
+
+* **YouTube - Add to queue:** Show Added to queue after adding a video ([9afe387](https://github.com/abemurica/morphe-patches/commit/9afe387b5dc946cd078412ac78231a36a49e072d))
+
 ## [1.46.0-dev.6](https://github.com/abemurica/morphe-patches/compare/v1.46.0-dev.5...v1.46.0-dev.6) (2026-10-06)
 
 ### ✨ New Features
