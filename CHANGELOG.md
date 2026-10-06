@@ -1,3 +1,9 @@
+## [1.46.0-dev.6](https://github.com/abemurica/morphe-patches/compare/v1.46.0-dev.5...v1.46.0-dev.6) (2026-10-06)
+
+### ✨ New Features
+
+* **YouTube - Add to queue:** Redesign the queue sheet with drag reorder and swipe to remove ([f234d55](https://github.com/abemurica/morphe-patches/commit/f234d55b8384c595c5fb8376c088954c81e59d45))
+
 ## [1.46.0-dev.5](https://github.com/abemurica/morphe-patches/compare/v1.46.0-dev.4...v1.46.0-dev.5) (2026-10-05)
 
 ### ✨ New Features
