@@ -595,8 +595,8 @@ Info: May not work on live streams"</string>
     <string name="morphe_queue_restore_summary">Queue is kept after restarting the app</string>
     <string name="morphe_swap_save_and_queue_actions_title">Swap Save and Queue actions</string>
     <string name="morphe_swap_save_and_queue_actions_summary">Tap for queue options, tap and hold to save to Watch later</string>
-    <string name="morphe_local_queue_title">Active queue</string>
-    <string name="morphe_local_queue_summary">Replaces the Morphe queue with an on-device queue that plays through on its own</string>
+    <string name="morphe_local_queue_title">Premium-style queue</string>
+    <string name="morphe_local_queue_summary">Replaces the Morphe queue with one that lives on the device, plays through on its own, and can be reordered by dragging</string>
     <string name="morphe_local_queue_sheet_title">Queue</string>
     <string name="morphe_local_queue_open">Queue (%d)</string>
     <string name="morphe_local_queue_clear">Clear all</string>
