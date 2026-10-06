@@ -608,7 +608,7 @@ Info: May not work on live streams"</string>
     <string name="morphe_local_queue_play_next">Play next in queue</string>
     <string name="morphe_local_queue_reorder">Reorder</string>
     <string name="morphe_local_queue_remove">Remove</string>
-    <string name="morphe_local_queue_added_next">Playing next</string>
+    <string name="morphe_local_queue_added_next">Added to queue</string>
     <string name="morphe_local_queue_already_added">Already in queue (%d)</string>
     <string name="morphe_local_queue_full">Queue is full</string>
     <string name="morphe_local_queue_play_failed">Could not start the video</string>
