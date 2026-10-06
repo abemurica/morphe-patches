@@ -792,7 +792,7 @@ public final class FlyoutUtils {
         visibleFlyoutButtons.add(new Pair<>(currentButtonName, currentButtonIndex));
     }
 
-    private static boolean containsFlyoutButton(String buttonName) {
+    public static boolean containsFlyoutButton(String buttonName) {
         for (Pair<String, Integer> button : visibleFlyoutButtons) {
             if (button.first.equals(buttonName)) {
                 return true;

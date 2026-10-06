@@ -99,12 +99,13 @@ public final class AddToQueuePatch {
 
     private static int addLocalQueueButtons(Object flyoutPanel, int index, String videoId) {
         final boolean feedFlyout = !getFlyoutVideoId().isEmpty();
-        if (feedFlyout && Settings.QUEUE_ADD_FLYOUT_MENU.get() && FlyoutUtils.getFlyoutPlaylistId().isEmpty()) {
+        if (feedFlyout && Settings.QUEUE_ADD_FLYOUT_MENU.get() && FlyoutUtils.getFlyoutPlaylistId().isEmpty()
+                && !FlyoutUtils.containsFlyoutButton(queueButtonOriginalNames.get(0))) {
             index = FlyoutUtils.addFlyoutButton(
                     flyoutPanel,
                     queueButtonDrawable,
-                    str("morphe_queue_manager_add_to_queue"),
-                    v -> flyoutButtonClickLogic(queueButtonOriginalNames.get(1), videoId),
+                    str("morphe_local_queue_play_next"),
+                    v -> flyoutButtonClickLogic(queueButtonOriginalNames.get(0), videoId),
                     index
             );
         }
@@ -215,7 +216,11 @@ public final class AddToQueuePatch {
         try {
             if (queueButtonOriginalNames.contains(buttonName)) {
                 if (LocalQueuePatch.isEnabled()) {
-                    LocalQueuePatch.add(videoId, queueButtonOriginalNames.get(0).equals(buttonName));
+                    if (!queueButtonOriginalNames.get(0).equals(buttonName)) {
+                        return false;
+                    }
+
+                    LocalQueuePatch.add(videoId);
                     FlyoutUtils.dismissFlyout();
                     return true;
                 }

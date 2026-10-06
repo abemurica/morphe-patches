@@ -29,12 +29,19 @@ public final class NativeQueuePatch {
      * Video that was handed to YouTube's playback queue, and the video that was playing when that happened.
      */
     @Nullable
-    private static String handedOffVideoId;
+    private static volatile String handedOffVideoId;
     @Nullable
-    private static String handedOffForVideoId;
+    private static volatile String handedOffForVideoId;
 
     public static boolean isEnabled() {
         return Settings.NATIVE_QUEUE.get() && LocalQueuePatch.isEnabled();
+    }
+
+    /**
+     * @return If the video was already handed to YouTube's playback queue and has not played yet.
+     */
+    static boolean isPending(String videoId) {
+        return videoId.equals(handedOffVideoId);
     }
 
     /**
