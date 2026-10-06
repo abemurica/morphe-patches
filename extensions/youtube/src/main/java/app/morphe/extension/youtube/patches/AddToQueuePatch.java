@@ -70,7 +70,7 @@ public final class AddToQueuePatch {
 
                 @Override
                 public void onListBound(ViewGroup itemList) {
-                    if (!Settings.QUEUE_OVERRIDE_FLYOUT_MENU.get()
+                    if (!isFlyoutOverrideEnabled()
                             || SECONDARY_CONTAINER_ID == 0) {
                         return;
                     }
@@ -97,9 +97,13 @@ public final class AddToQueuePatch {
                 }
             };
 
+    private static boolean isFlyoutOverrideEnabled() {
+        return LocalQueuePatch.isEnabled() || Settings.QUEUE_OVERRIDE_FLYOUT_MENU.get();
+    }
+
     private static int addLocalQueueButtons(Object flyoutPanel, int index, String videoId) {
         final boolean feedFlyout = !getFlyoutVideoId().isEmpty();
-        if (feedFlyout && Settings.QUEUE_ADD_FLYOUT_MENU.get() && FlyoutUtils.getFlyoutPlaylistId().isEmpty()
+        if (feedFlyout && FlyoutUtils.getFlyoutPlaylistId().isEmpty()
                 && !FlyoutUtils.containsFlyoutButton(queueButtonOriginalNames.get(0))) {
             index = FlyoutUtils.addFlyoutButton(
                     flyoutPanel,
@@ -140,7 +144,7 @@ public final class AddToQueuePatch {
     public static Runnable replaceButtonRunnable(Runnable original) {
         original = QueueDebugPatch.wrapRunnable(original, FlyoutUtils.getCurrentButtonName());
 
-        if (!Settings.QUEUE_OVERRIDE_FLYOUT_MENU.get()) {
+        if (!isFlyoutOverrideEnabled()) {
             return original;
         }
 
@@ -160,7 +164,7 @@ public final class AddToQueuePatch {
         try {
             QueueDebugPatch.onContextClick(object);
 
-            if (!Settings.QUEUE_OVERRIDE_FLYOUT_MENU.get()) {
+            if (!isFlyoutOverrideEnabled()) {
                 return false;
             }
 

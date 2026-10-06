@@ -34,7 +34,7 @@ public final class NativeQueuePatch {
     private static volatile String handedOffForVideoId;
 
     public static boolean isEnabled() {
-        return Settings.NATIVE_QUEUE.get() && LocalQueuePatch.isEnabled();
+        return LocalQueuePatch.isEnabled();
     }
 
     /**
