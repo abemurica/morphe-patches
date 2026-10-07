@@ -93,8 +93,6 @@ private const val CUSTOM_FILTER =
     "Lapp/morphe/extension/youtube/patches/components/CustomFilter;"
 private const val KEYWORD_FILTER =
     "Lapp/morphe/extension/youtube/patches/components/KeywordContentFilter;"
-private const val AISLIST_FILTER =
-    "Lapp/morphe/extension/youtube/patches/components/AiSListFilter;"
 private const val SANITIZE_VIDEO_SUBTITLE_FILTER =
     "Lapp/morphe/extension/youtube/patches/spans/SanitizeVideoSubtitleFilter;"
 private const val SEARCH_LINKS_FILTER =
@@ -282,76 +280,6 @@ val hideLayoutComponentsPatch = bytecodePatch(
                 )
             ),
             PreferenceScreenPreference(
-                key = "morphe_hide_aislist_screen",
-                sorting = Sorting.UNSORTED,
-                preferences = setOf(
-                    PreferenceCategory(
-                        key = "morphe_hide_aislist_blocklist_category",
-                        sorting = Sorting.UNSORTED,
-                        preferences = setOf(
-                            SwitchPreference(
-                                key = "morphe_hide_aislist_blocklist_home",
-                                titleKey = "morphe_hide_aislist_hide_home_title"
-                            ),
-                            SwitchPreference(
-                                key = "morphe_hide_aislist_blocklist_search",
-                                titleKey = "morphe_hide_aislist_hide_search_title"
-                            )
-
-                        )
-                    ),
-                    PreferenceCategory(
-                        key = "morphe_hide_aislist_warnlist_category",
-                        sorting = Sorting.UNSORTED,
-                        preferences = setOf(
-                            SwitchPreference(
-                                key = "morphe_hide_aislist_warnlist_home",
-                                titleKey = "morphe_hide_aislist_hide_home_title"
-                            ),
-                            SwitchPreference(
-                                key = "morphe_hide_aislist_warnlist_search",
-                                titleKey = "morphe_hide_aislist_hide_search_title"
-                            )
-                        )
-                    ),
-                    PreferenceCategory(
-                        key = "morphe_aislist_submit_category",
-                        sorting = Sorting.UNSORTED,
-                        preferences = setOf(
-                            SwitchPreference("morphe_aislist_submit_flyout_menu", summary = true),
-                            TextPreference(
-                                key = "morphe_aislist_submit_username",
-                                inputType = InputType.TEXT
-                            )
-                        )
-                    ),
-                    PreferenceCategory(
-                        key = "morphe_hide_aislist_stats_category",
-                        titleKey = "morphe_hide_stats_category_title",
-                        sorting = Sorting.UNSORTED,
-                        preferences = emptySet(),
-                        tag = "app.morphe.extension.youtube.settings.preference.AiSListStatsPreferenceCategory"
-                    ),
-                    PreferenceCategory(
-                        key = "morphe_hide_aislist_about_category",
-                        titleKey = "morphe_hide_about_category_title",
-                        sorting = Sorting.UNSORTED,
-                        preferences = setOf(
-                            NonInteractivePreference(
-                                key = "morphe_hide_aislist_about",
-                                titleKey = "morphe_hide_aislist_screen_title",
-                                tag = "app.morphe.extension.shared.settings.preference.BulletPointPreference"
-                            ),
-                            NonInteractivePreference(
-                                key = "morphe_hide_aislist_attribution",
-                                tag = "app.morphe.extension.shared.settings.preference.AiSListAttributionPreference",
-                                selectable = true
-                            )
-                        )
-                    )
-                )
-            ),
-            PreferenceScreenPreference(
                 key = "morphe_hide_filter_bar_screen",
                 preferences = setOf(
                     SwitchPreference("morphe_hide_filter_bar_in_channel_page"),
@@ -385,6 +313,7 @@ val hideLayoutComponentsPatch = bytecodePatch(
             SwitchPreference("morphe_hide_album_cards", summary = true),
             SwitchPreference("morphe_hide_artist_cards", summary = true),
             SwitchPreference("morphe_hide_auto_dubbed_label"),
+            SwitchPreference("morphe_hide_channel_buttons", summary = true),
             SwitchPreference("morphe_hide_community_posts"),
             SwitchPreference("morphe_hide_compact_banner", summary = true),
             if (is_20_26_or_greater) {
@@ -412,10 +341,11 @@ val hideLayoutComponentsPatch = bytecodePatch(
             ),
             SwitchPreference("morphe_hide_floating_microphone_button", summary = true),
             SwitchPreference("morphe_hide_get_premium_button"),
-            SwitchPreference("morphe_hide_history_shelf", summary = true),
+            SwitchPreference("morphe_hide_history_shelf"),
             SwitchPreference("morphe_hide_horizontal_shelves", summary = true),
             SwitchPreference("morphe_hide_hyped_label"),
             SwitchPreference("morphe_hide_image_shelf", summary = true),
+            SwitchPreference("morphe_hide_handle", summary = true),
             SwitchPreference("morphe_hide_help_feedback_menu", summary = true),
             SwitchPreference("morphe_hide_invite_to_message_card", summary = true),
             SwitchPreference("morphe_hide_latest_videos_button", summary = true),
@@ -428,7 +358,7 @@ val hideLayoutComponentsPatch = bytecodePatch(
             SwitchPreference("morphe_hide_search_term_thumbnails", summary = true),
             SwitchPreference("morphe_hide_show_more_button", summary = true),
             SwitchPreference("morphe_hide_subscribed_channels_bar"),
-            SwitchPreference("morphe_hide_subscribed_channels_bar_names"),
+            SwitchPreference("morphe_hide_subscribed_channels_bar_names", summary = true),
             SwitchPreference("morphe_hide_surveys", summary = true),
             SwitchPreference("morphe_hide_ticket_shelf"),
             SwitchPreference(
@@ -444,7 +374,6 @@ val hideLayoutComponentsPatch = bytecodePatch(
                 tag = "app.morphe.extension.shared.settings.preference.BulletPointSwitchPreference"
             ),
             SwitchPreference("morphe_hide_web_search_results", summary = true),
-            SwitchPreference("morphe_hide_you_tab_channel_handle", summary = true),
             SwitchPreference("morphe_hide_youtube_doodles", summary = true)
         )
 
@@ -470,7 +399,6 @@ val hideLayoutComponentsPatch = bytecodePatch(
         }
         addLithoFilter(COMMENTS_FILTER)
         addLithoFilter(KEYWORD_FILTER)
-        addLithoFilter(AISLIST_FILTER)
         addLithoFilter(CUSTOM_FILTER)
         addSpanFilter(SANITIZE_VIDEO_SUBTITLE_FILTER)
         addSpanFilter(SEARCH_LINKS_FILTER)

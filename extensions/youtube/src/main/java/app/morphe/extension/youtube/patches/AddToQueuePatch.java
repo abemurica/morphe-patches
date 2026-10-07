@@ -134,6 +134,10 @@ public final class AddToQueuePatch {
         return index;
     }
 
+    public static boolean isPatchIncluded() {
+        return false; // Modified during patching.
+    }
+
     public static void registerFlyoutProvider() {
         FlyoutUtils.setFlyoutButtonProvider(FLYOUT_BUTTON_PROVIDER);
     }

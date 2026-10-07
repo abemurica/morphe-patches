@@ -7,7 +7,6 @@
 
 package app.morphe.patches.youtube.layout.flyout
 
-
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructionsWithLabels
 import app.morphe.patcher.extensions.InstructionExtensions.getInstruction
@@ -15,14 +14,13 @@ import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod.Companion.toMutable
 import app.morphe.patches.shared.misc.settings.preference.SwitchPreference
 import app.morphe.patches.shared.misc.settings.preference.noTitleUnsortedPreferenceCategory
-import app.morphe.patches.youtube.interaction.reload.OpenNewVideoIntentParcelableFingerprint
-import app.morphe.patches.youtube.interaction.reload.reloadVideoButtonPatch
-import app.morphe.patches.youtube.layout.hide.general.ContextualMenuItemBuilderFingerprint
+import app.morphe.patches.youtube.misc.loadvideo.OpenNewVideoIntentParcelableFingerprint
 import app.morphe.patches.youtube.layout.hide.general.ContextualMenuItemBuilderOnClickFingerprint
 import app.morphe.patches.youtube.layout.playlistautoplay.NavigationIntentEnumFingerprint
 import app.morphe.patches.youtube.layout.playlistautoplay.navigationIntentHook
 import app.morphe.patches.youtube.misc.auth.authHookPatch
 import app.morphe.patches.youtube.misc.extension.sharedExtensionPatch
+import app.morphe.patches.youtube.misc.loadvideo.loadVideoHookPatch
 import app.morphe.patches.youtube.misc.playservice.is_21_05_or_greater
 import app.morphe.patches.youtube.misc.proto.elementProtoParserHookPatch
 import app.morphe.patches.youtube.misc.settings.PreferenceScreen
@@ -38,6 +36,7 @@ import com.android.tools.smali.dexlib2.Opcode
 import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation
 import com.android.tools.smali.dexlib2.iface.instruction.FiveRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
+import app.morphe.util.setExtensionIsPatchIncluded
 import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction
 import com.android.tools.smali.dexlib2.iface.instruction.TwoRegisterInstruction
 import com.android.tools.smali.dexlib2.immutable.ImmutableMethod
@@ -56,9 +55,6 @@ private const val EXTENSION_NATIVE_QUEUE_CLASS =
 private const val EXTENSION_NATIVE_QUEUE_INTERFACE =
     $$"Lapp/morphe/extension/youtube/patches/NativeQueuePatch$NativeQueueInterface;"
 
-private const val EXTENSION_UTILS_CLASS =
-    "Lapp/morphe/extension/youtube/patches/utils/FlyoutUtils;"
-
 @Suppress("unused")
 val addToQueuePatch = bytecodePatch(
     name = "Add to queue",
@@ -70,7 +66,7 @@ val addToQueuePatch = bytecodePatch(
         sharedExtensionPatch,
         elementProtoParserHookPatch,
         authHookPatch,
-        reloadVideoButtonPatch
+        loadVideoHookPatch
     )
 
     compatibleWith(COMPATIBILITY_YOUTUBE)
@@ -80,22 +76,18 @@ val addToQueuePatch = bytecodePatch(
             noTitleUnsortedPreferenceCategory(
                 SwitchPreference("morphe_local_queue", summary = true),
                 SwitchPreference("morphe_queue_override_flyout_menu", summary = true),
-                SwitchPreference("morphe_queue_add_flyout_menu", summary = true),
-                SwitchPreference("morphe_ads_channel_whitelist_flyout_menu", summary = true),
-                SwitchPreference("morphe_playback_speed_channel_whitelist_flyout_menu", summary = true)
+                SwitchPreference("morphe_queue_add_flyout_menu", summary = true)
             )
         )
 
-
+        // Flyout patch adds instructions to this method, so the prior match indexes are stale.
+        FeedFlyoutButtonsInitializerFingerprint.clearMatch()
         FeedFlyoutButtonsInitializerFingerprint.let { mainFingerprint ->
             val mainFingerprintMatches = mainFingerprint.instructionMatches
             val getCharSequenceReference = mainFingerprintMatches.first().getInstruction<ReferenceInstruction>().reference
-            val enumMethodRegister = mainFingerprintMatches[1].getInstruction<OneRegisterInstruction>().registerA
-            val charCheckIndex = mainFingerprintMatches[4].index
             val enumIntField = mainFingerprintMatches[6].getInstruction<ReferenceInstruction>().reference
             val enumMethodCall = mainFingerprintMatches[7].getInstruction<ReferenceInstruction>().reference
             val runnableIndex = mainFingerprintMatches.last().index
-            val charCheckRegister = mainFingerprintMatches.last().getInstruction<OneRegisterInstruction>().registerA
 
             mainFingerprint.method.apply {
                 val runnableRegister = getInstruction<TwoRegisterInstruction>(runnableIndex).registerA
@@ -106,39 +98,6 @@ val addToQueuePatch = bytecodePatch(
                         move-result-object v$runnableRegister
                     """
                 )
-
-                val freeRegister = findFreeRegister(charCheckIndex, charCheckRegister, enumMethodRegister)
-                addInstructions(
-                    charCheckIndex,
-                    """
-                        iget v$freeRegister, v$enumMethodRegister, $enumIntField
-                        invoke-static { v$freeRegister }, $enumMethodCall
-                        move-result-object v$freeRegister
-                        invoke-static { v$freeRegister, v$charCheckRegister }, $EXTENSION_UTILS_CLASS->setCurrentButtonInfo(Ljava/lang/Enum;Ljava/lang/Object;)V
-                    """
-                )
-            }
-
-            ContextualMenuItemBuilderFingerprint.let {
-                it.method.cloneParameters().apply {
-                    val targetInstructionIndex = it.instructionMatches[3].index + numberOfParameterRegisters
-                    val targetInstructionRegister = it.instructionMatches[3]
-                        .getInstruction<FiveRegisterInstruction>().registerC
-                    val secondButtonInfoParameterRegister = it.instructionMatches[2]
-                        .getInstruction<FiveRegisterInstruction>().registerC
-
-                    addInstructions(
-                        targetInstructionIndex,
-                            """
-                            invoke-static { v$targetInstructionRegister }, $getCharSequenceReference
-                            move-result-object p0
-                            iget p0, p0, $enumIntField
-                            invoke-static { p0 }, $enumMethodCall
-                            move-result-object p0
-                            invoke-static { p0, v$secondButtonInfoParameterRegister }, $EXTENSION_UTILS_CLASS->setCurrentButtonInfo(Ljava/lang/Enum;Ljava/lang/Object;)V
-                        """
-                    )
-                }
             }
 
             fun getReplaceOnItemClickPatch(
@@ -300,5 +259,7 @@ val addToQueuePatch = bytecodePatch(
                 """
             )
         }
+
+        setExtensionIsPatchIncluded(EXTENSION_CLASS)
     }
 }

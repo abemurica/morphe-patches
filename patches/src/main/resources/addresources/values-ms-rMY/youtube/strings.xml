@@ -182,7 +182,7 @@ Perubahan termasuk:
   <!-- 'Connect' should be translated using the same localized wording YouTube displays for the button. -->
   <string name="morphe_hide_connect_button_title">Sorokkan butang \'Sambung\'</string>
   <!-- 'Report' should be translated using the same localized wording YouTube displays for the button.
-          This button usually appears on live streamed videos. -->
+          This button usually appears on live stream videos. -->
   <!-- 'Remix' should be translated using the same localized wording YouTube displays for the button. -->
   <!-- 'Download' should be translated using the same localized wording YouTube displays for the button. -->
   <!-- 'Hype' should be translated using the same localized wording YouTube displays for the button.
@@ -327,6 +327,9 @@ Automotive layout
   <!-- layout.thumbnails.bypassImageRegionRestrictionsPatch -->
   <!-- layout.dearrow.deArrowPatch -->
   <!-- "DeArrow" must be kept untranslated. -->
+  <!-- 'Home' should be translated using the same localized wording YouTube displays for the tab. -->
+  <!-- 'Subscriptions' should be translated using the same localized wording YouTube displays for the tab. -->
+  <!-- 'You' should be translated using the same localized wording YouTube displays for the tab. -->
   <!-- 'Home' should be translated using the same localized wording YouTube displays for the tab. -->
   <!-- 'Subscriptions' should be translated using the same localized wording YouTube displays for the tab. -->
   <!-- 'You' should be translated using the same localized wording YouTube displays for the tab. -->
