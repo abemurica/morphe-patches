@@ -1257,6 +1257,15 @@ Limitation: If \'Restore old video action bar\' is turned off, \'More videos\' o
     <string name="morphe_seekbar_custom_color_accent_summary">Set the secondary color of the video progress bar</string>
     <string name="morphe_seekbar_custom_color_invalid">Invalid seekbar color value</string>
 
+    <!-- layout.font.customFontPatch -->
+    <string name="morphe_custom_font_title">Custom font</string>
+    <string name="morphe_custom_font_summary">Shows the app with the font file picked below</string>
+    <string name="morphe_custom_font_file_title">Custom font file</string>
+    <string name="morphe_custom_font_file_summary">Pick a TTF or OTF font file</string>
+    <string name="morphe_custom_font_file_invalid">The picked file is not a TTF or OTF font</string>
+    <string name="morphe_custom_font_pick_file_first">Pick a font file first</string>
+    <string name="morphe_custom_font_failed_to_load">Custom font could not be loaded and is turned off</string>
+
     <!-- layout.branding.customBrandingPatch -->
     <string name="morphe_custom_branding_name_entry_2" translatable="false">YouTube Morphe</string>
     <string name="morphe_custom_branding_name_entry_3" translatable="false">YT Morphe</string>
