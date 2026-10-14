@@ -1,3 +1,9 @@
+## [1.48.0-dev.11](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.10...v1.48.0-dev.11) (2026-10-14)
+
+### ✨ New Features
+
+* **YouTube - Add to queue:** Add native queue setting ([57a59b7](https://github.com/abemurica/morphe-patches/commit/57a59b7f62dbef138c2e70d42b54201fd3782fc4))
+
 ## [1.48.0-dev.10](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.9...v1.48.0-dev.10) (2026-10-14)
 
 ### 🐛 Bug Fixes
