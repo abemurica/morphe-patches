@@ -1,3 +1,9 @@
+## [1.48.0-dev.10](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.9...v1.48.0-dev.10) (2026-10-14)
+
+### 🐛 Bug Fixes
+
+* **YouTube - Add to queue:** Keep the playing video title when the queue sheet refreshes ([76d7ca7](https://github.com/abemurica/morphe-patches/commit/76d7ca788a7bb95d38d134cae06caefd4577af35))
+
 ## [1.48.0-dev.9](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.8...v1.48.0-dev.9) (2026-10-14)
 
 ### 🐛 Bug Fixes
