@@ -64,11 +64,13 @@ public final class NativeQueuePatch {
      */
     public static synchronized void onResolveNavigation(Object queue, Enum<?> navigationType) {
         try {
+            final String name = navigationType == null ? "null" : navigationType.name();
+            Logger.printDebug(() -> "onResolveNavigation " + name + " enabled: " + isEnabled()
+                    + " interface: " + (queue instanceof NativeQueueInterface));
             if (!isEnabled() || navigationType == null || !(queue instanceof NativeQueueInterface)) {
                 return;
             }
 
-            final String name = navigationType.name();
             if (!"NEXT".equals(name) && !"AUTOPLAY".equals(name) && !"AUTONAV".equals(name)) {
                 return;
             }
@@ -76,21 +78,25 @@ public final class NativeQueuePatch {
             reconcile();
             final String current = VideoInformation.getVideoId();
             if (handedOffVideoId != null && current.equals(handedOffForVideoId)) {
+                Logger.printDebug(() -> "Already handed off " + handedOffVideoId + " for " + current);
                 return;
             }
 
             final String videoId = LocalQueuePatch.peekFirstVideoId();
             if (videoId == null || videoId.equals(current)) {
+                Logger.printDebug(() -> "Nothing to hand off, first queued: " + videoId + " current: " + current);
                 return;
             }
 
             final Parcelable watchParcelable = LoadVideoPatch.getWatchParcelable(videoId);
             if (watchParcelable == null) {
+                Logger.printDebug(() -> "No watch parcelable for " + videoId);
                 return;
             }
 
-            if (((NativeQueueInterface) queue).patch_insertAfterCurrent(watchParcelable)) {
-                Logger.printDebug(() -> "Handed " + videoId + " to the playback queue for " + name);
+            final boolean handedOff = ((NativeQueueInterface) queue).patch_insertAfterCurrent(watchParcelable);
+            Logger.printDebug(() -> "Handed " + videoId + " to the playback queue for " + name + ": " + handedOff);
+            if (handedOff) {
                 handedOffVideoId = videoId;
                 handedOffForVideoId = current;
             }
