@@ -12,6 +12,7 @@ import android.os.Parcelable;
 import androidx.annotation.Nullable;
 
 import app.morphe.extension.shared.Logger;
+import app.morphe.extension.shared.Utils;
 import app.morphe.extension.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
@@ -96,6 +97,7 @@ public final class NativeQueuePatch {
 
             final boolean handedOff = ((NativeQueueInterface) queue).patch_insertAfterCurrent(watchParcelable);
             Logger.printDebug(() -> "Handed " + videoId + " to the playback queue for " + name + ": " + handedOff);
+            Utils.showToastShort("Native queue: " + name + (handedOff ? " handed off" : " insert failed"));
             if (handedOff) {
                 handedOffVideoId = videoId;
                 handedOffForVideoId = current;
