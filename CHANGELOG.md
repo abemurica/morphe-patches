@@ -1,3 +1,30 @@
+## [1.48.0-dev.8](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.7...v1.48.0-dev.8) (2026-10-14)
+
+### 🐛 Bug Fixes
+
+* Export only filtered logs and stream file exports efficiently ([#3746](https://github.com/abemurica/morphe-patches/issues/3746)) ([e04c72d](https://github.com/abemurica/morphe-patches/commit/e04c72d8e068204c3a2178b75451fb8bfbb4d755))
+* **YouTube - Add to queue:** Add "Play last in queue" when YouTube does not show it ([c32ecb2](https://github.com/abemurica/morphe-patches/commit/c32ecb25c27d21f19a82230516ab07d6dcb084c9))
+* **YouTube - Add to queue:** Do not add queue rows to the History menu ([d132eb7](https://github.com/abemurica/morphe-patches/commit/d132eb7a10d6ba30f314cef13faba347871b70d1))
+* **YouTube - Add to queue:** Show Added to queue after adding a video ([9afe387](https://github.com/abemurica/morphe-patches/commit/9afe387b5dc946cd078412ac78231a36a49e072d))
+* **YouTube - Add to queue:** Show the title of the playing video in the queue sheet ([bc8729c](https://github.com/abemurica/morphe-patches/commit/bc8729c22a745cfb5aef3856324beb7d287934e4))
+* **YouTube - Disable continue watching prompt:** Fix patching on 21.40 ([789bd1c](https://github.com/abemurica/morphe-patches/commit/789bd1c5599b1d3f1c3c456ecde830c22c0f7abe))
+* **YouTube - Hide layout components:** Video titles being hidden on `20.21.37` ([fead993](https://github.com/abemurica/morphe-patches/commit/fead993a68706580163825403b3ffd60a6866333))
+
+### ✨ New Features
+
+* Brand the fork as AbeMurica's patches ([d498434](https://github.com/abemurica/morphe-patches/commit/d498434f7d9778fbdd2b3a1a13503d937a45dc70))
+* Brand the fork as AbeMurica's patches ([6dfef9a](https://github.com/abemurica/morphe-patches/commit/6dfef9a63d0268e41abace3e8159d4ff950fa181))
+* **YouTube - Add to queue:** Add native queue setting ([5a1f586](https://github.com/abemurica/morphe-patches/commit/5a1f5860c86bb7024f338bf02d8ef607f997b612))
+* **YouTube - Add to queue:** Add on-device active queue setting ([bea522a](https://github.com/abemurica/morphe-patches/commit/bea522abb00517ca89236d8aa8ef6b4da57d2f54))
+* **YouTube - Add to queue:** Redesign the queue sheet with drag reorder and swipe to remove ([f234d55](https://github.com/abemurica/morphe-patches/commit/f234d55b8384c595c5fb8376c088954c81e59d45))
+* **YouTube - Debugging:** Add queue activity logging ([5d43a71](https://github.com/abemurica/morphe-patches/commit/5d43a714a185ed7cb8f178d44ac05d043816084f))
+* **YouTube - Disable continue watching prompt:** Add option to stop autoplay pausing after inactivity ([098e826](https://github.com/abemurica/morphe-patches/commit/098e826980dab7436e057a4b11ca01e320a3f01f)), closes [#684](https://github.com/abemurica/morphe-patches/issues/684)
+* **YouTube - Disable video codecs:** Add "Force VP9 codec" setting ([487b9b5](https://github.com/abemurica/morphe-patches/commit/487b9b57d5e668d9906ecaae57fe05e2c32420e7))
+* **YouTube - Playback buffer:** Use buffer levels and add playback buffer memory option ([a240bd7](https://github.com/abemurica/morphe-patches/commit/a240bd75a846949dd0f74921a3291fe7ba46fe78))
+* **YouTube - Playback buffer:** Use buffer levels and add playback buffer memory option ([8b1be93](https://github.com/abemurica/morphe-patches/commit/8b1be9359f1d28eb19495399caf9bc4090f663da))
+* **YouTube:** Add "Force system font" patch ([bf89789](https://github.com/abemurica/morphe-patches/commit/bf8978976a01677ce9df5abf6a672795b5672631))
+* **YouTube:** Add `Series tracking` patch ([#3114](https://github.com/abemurica/morphe-patches/issues/3114)) ([d98558f](https://github.com/abemurica/morphe-patches/commit/d98558fde76a7d2f49579a9f794423cd765211c9))
+
 ## [1.46.0-dev.8](https://github.com/abemurica/morphe-patches/compare/v1.46.0-dev.7...v1.46.0-dev.8) (2026-10-14)
 
 ### 🐛 Bug Fixes
