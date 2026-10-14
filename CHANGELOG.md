@@ -1,3 +1,13 @@
+## [1.48.0-dev.9](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.8...v1.48.0-dev.9) (2026-10-14)
+
+### 🐛 Bug Fixes
+
+* **YouTube - Restore original titles:** Do not reload the same video title once the player is opened ([1648848](https://github.com/abemurica/morphe-patches/commit/1648848f2b3b2215f0ed3e6a08ddc0877a9365de))
+
+### ✨ New Features
+
+* **YouTube - Channel search:** Added loading animation during searching ([d3fc642](https://github.com/abemurica/morphe-patches/commit/d3fc6421ca3f8e7ac6cc162d1a51b24c4b087e6e))
+
 ## [1.48.0-dev.8](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.7...v1.48.0-dev.8) (2026-10-14)
 
 ### 🐛 Bug Fixes
