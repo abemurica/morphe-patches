@@ -1,3 +1,10 @@
+## [1.48.0-dev.12](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.11...v1.48.0-dev.12) (2026-10-14)
+
+### 🐛 Bug Fixes
+
+* **YouTube - Add to queue:** Do not open the Premium page from the queue row of a playlist menu ([4745eec](https://github.com/abemurica/morphe-patches/commit/4745eecbb3d6715ac9bb774480dce866838d6046))
+* **YouTube - Hide preview comment:** Removed the timestamp from the Spanned String instead of disabling its tap logic ([cca6aca](https://github.com/abemurica/morphe-patches/commit/cca6aca240ef99e55740af20342a5d28deda6275))
+
 ## [1.48.0-dev.11](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.10...v1.48.0-dev.11) (2026-10-14)
 
 ### ✨ New Features
