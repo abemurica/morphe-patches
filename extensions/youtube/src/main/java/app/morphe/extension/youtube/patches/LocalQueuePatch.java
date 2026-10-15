@@ -229,6 +229,11 @@ public final class LocalQueuePatch {
      */
     public static boolean shouldCancelNavigation(Enum<?> navigationIntent) {
         try {
+            if (navigationIntent != null && NativeQueuePatch.isEnabled()) {
+                final String intentName = navigationIntent.name();
+                Logger.printDebug(() -> "Navigation " + intentName + " native queue stands down");
+                Logger.printDebug(() -> android.util.Log.getStackTraceString(new Throwable("navigation " + intentName)));
+            }
             if (!isEnabled() || NativeQueuePatch.isEnabled()) {
                 return false;
             }
