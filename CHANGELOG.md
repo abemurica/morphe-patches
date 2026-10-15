@@ -1,3 +1,9 @@
+## [1.48.0-dev.16](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.15...v1.48.0-dev.16) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **YouTube - Add to queue:** Start the next queued video from the background by handing the intent to the running activity ([bec1ef3](https://github.com/abemurica/morphe-patches/commit/bec1ef3cb253c7379caa92e3dd77b16c2ebf2c76))
+
 ## [1.48.0-dev.15](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.14...v1.48.0-dev.15) (2026-10-15)
 
 ### 🐛 Bug Fixes
