@@ -1,3 +1,9 @@
+## [1.48.0-dev.17](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.16...v1.48.0-dev.17) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **YouTube - Add to queue:** Remove the native queue experiment ([3dc026e](https://github.com/abemurica/morphe-patches/commit/3dc026e2a18ff1e87d72a6a6eef49814600de6be))
+
 ## [1.48.0-dev.16](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.15...v1.48.0-dev.16) (2026-10-15)
 
 ### 🐛 Bug Fixes
