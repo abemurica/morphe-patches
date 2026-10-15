@@ -1,3 +1,9 @@
+## [1.48.0-dev.18](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.17...v1.48.0-dev.18) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **YouTube - Add to queue:** Resume a queued video that starts paused in the background ([c1bee94](https://github.com/abemurica/morphe-patches/commit/c1bee94eed95858ea99ce56464c41c472383257a))
+
 ## [1.48.0-dev.17](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.16...v1.48.0-dev.17) (2026-10-15)
 
 ### 🐛 Bug Fixes
