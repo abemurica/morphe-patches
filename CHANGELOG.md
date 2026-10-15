@@ -1,3 +1,9 @@
+## [1.48.0-dev.14](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.13...v1.48.0-dev.14) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **YouTube - Add to queue:** Log navigation callers and hand off toasts for the native queue ([dff6925](https://github.com/abemurica/morphe-patches/commit/dff69259df6d878f9d499ee039e4183a56a5f3bc))
+
 ## [1.48.0-dev.13](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.12...v1.48.0-dev.13) (2026-10-14)
 
 ### 🐛 Bug Fixes
