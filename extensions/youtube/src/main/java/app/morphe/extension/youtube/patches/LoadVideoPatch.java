@@ -53,21 +53,6 @@ public final class LoadVideoPatch {
         return playerInterfaceRef.get() != null;
     }
 
-    /**
-     * @return The parcelable YouTube uses to start playing a video, or null if the player is not available.
-     */
-    @Nullable
-    public static Parcelable getWatchParcelable(String videoId) {
-        PlayerInterface playerInterface = playerInterfaceRef.get();
-        if (playerInterface == null) {
-            return null;
-        }
-
-        Intent intent = new Intent();
-        intent.putExtra("android.intent.extra.inventory_identifier", new String[]{"vnd.youtube://" + videoId});
-        return playerInterface.patch_getIntentParcelable(intent);
-    }
-
     @SuppressWarnings("ExtractMethodRecommender")
     public static void initializeReloadVideo() {
         try {
