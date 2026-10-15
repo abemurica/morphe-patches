@@ -1,3 +1,10 @@
+## [1.48.0-dev.21](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.20...v1.48.0-dev.21) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **YouTube - Add to queue:** Close the queue sheet when the player enters picture-in-picture ([85337b9](https://github.com/abemurica/morphe-patches/commit/85337b9e773f875839683ba1917aef7728be878b))
+* **YouTube - Add to queue:** Do not add the Queue row to the player settings panel ([8e30b64](https://github.com/abemurica/morphe-patches/commit/8e30b6420d86108887cca7184dd9cdce0aca7cd4))
+
 ## [1.48.0-dev.20](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.19...v1.48.0-dev.20) (2026-10-15)
 
 ### 🐛 Bug Fixes
