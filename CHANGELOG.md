@@ -1,3 +1,9 @@
+## [1.48.0-dev.15](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.14...v1.48.0-dev.15) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **YouTube - Add to queue:** Show navigation type and native queue state in a toast ([64286b0](https://github.com/abemurica/morphe-patches/commit/64286b0bb7731dfd70f623829c904195e6ce440c))
+
 ## [1.48.0-dev.14](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.13...v1.48.0-dev.14) (2026-10-15)
 
 ### 🐛 Bug Fixes

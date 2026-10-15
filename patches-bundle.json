@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-10-15T00:06:00",
-  "description": "## [1.48.0-dev.14](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.13...v1.48.0-dev.14) (2026-10-15)\n\n### 🐛 Bug Fixes\n\n* **YouTube - Add to queue:** Log navigation callers and hand off toasts for the native queue ([dff6925](https://github.com/abemurica/morphe-patches/commit/dff69259df6d878f9d499ee039e4183a56a5f3bc))",
-  "download_url": "https://github.com/abemurica/morphe-patches/releases/download/v1.48.0-dev.14/patches-1.48.0-dev.14.mpp",
+  "created_at": "2026-10-15T00:18:50",
+  "description": "## [1.48.0-dev.15](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.14...v1.48.0-dev.15) (2026-10-15)\n\n### 🐛 Bug Fixes\n\n* **YouTube - Add to queue:** Show navigation type and native queue state in a toast ([64286b0](https://github.com/abemurica/morphe-patches/commit/64286b0bb7731dfd70f623829c904195e6ce440c))",
+  "download_url": "https://github.com/abemurica/morphe-patches/releases/download/v1.48.0-dev.15/patches-1.48.0-dev.15.mpp",
   "signature_download_url": "",
-  "version": "1.48.0-dev.14"
+  "version": "1.48.0-dev.15"
 }
