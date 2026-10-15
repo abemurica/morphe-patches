@@ -1,3 +1,10 @@
+## [1.48.0-dev.20](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.19...v1.48.0-dev.20) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **YouTube - Add to queue:** Handle the click of the queue rows when the flyout list is bound ([8aaa8a0](https://github.com/abemurica/morphe-patches/commit/8aaa8a0bc6d274e1c3e4cc3c87cae69497c433f5))
+* **YouTube - Video quality:** Fix VP9 Shorts restarting in a loop with spoofed SABR streams ([ef04cc3](https://github.com/abemurica/morphe-patches/commit/ef04cc3c12131d0667e598a935425143d1a6dcf1))
+
 ## [1.48.0-dev.19](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.18...v1.48.0-dev.19) (2026-10-15)
 
 ### 🐛 Bug Fixes
