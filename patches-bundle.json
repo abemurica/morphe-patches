@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-10-15T00:57:13",
-  "description": "## [1.48.0-dev.18](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.17...v1.48.0-dev.18) (2026-10-15)\n\n### 🐛 Bug Fixes\n\n* **YouTube - Add to queue:** Resume a queued video that starts paused in the background ([c1bee94](https://github.com/abemurica/morphe-patches/commit/c1bee94eed95858ea99ce56464c41c472383257a))",
-  "download_url": "https://github.com/abemurica/morphe-patches/releases/download/v1.48.0-dev.18/patches-1.48.0-dev.18.mpp",
+  "created_at": "2026-10-15T01:21:12",
+  "description": "## [1.48.0-dev.19](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.18...v1.48.0-dev.19) (2026-10-15)\n\n### 🐛 Bug Fixes\n\n* **YouTube - Add to queue:** Reset the History menu flag for History list menus ([272c09b](https://github.com/abemurica/morphe-patches/commit/272c09bc03998d2dc60be937a6f2b282331fa32e))",
+  "download_url": "https://github.com/abemurica/morphe-patches/releases/download/v1.48.0-dev.19/patches-1.48.0-dev.19.mpp",
   "signature_download_url": "",
-  "version": "1.48.0-dev.18"
+  "version": "1.48.0-dev.19"
 }
