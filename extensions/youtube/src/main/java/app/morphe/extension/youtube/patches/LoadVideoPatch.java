@@ -13,8 +13,11 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Parcelable;
+import android.view.KeyEvent;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +30,7 @@ import app.morphe.extension.shared.Logger;
 import app.morphe.extension.shared.Utils;
 import app.morphe.extension.youtube.patches.playback.speed.RememberPlaybackSpeedPatch;
 import app.morphe.extension.youtube.shared.PlayerType;
+import app.morphe.extension.youtube.shared.VideoState;
 
 @SuppressWarnings("unused")
 public final class LoadVideoPatch {
@@ -187,10 +191,43 @@ public final class LoadVideoPatch {
             onNewIntent.setAccessible(true);
             onNewIntent.invoke(activity, intent);
             Utils.showToastShort("Queue: playing next in the background");
+            for (long delay : RESUME_CHECK_DELAYS_MILLISECONDS) {
+                Utils.runOnMainThreadDelayed(() -> resumeIfPaused(videoId), delay);
+            }
             return true;
         } catch (Exception ex) {
             Logger.printException(() -> "deliverVideoIntentInProcess failure", ex);
             return false;
+        }
+    }
+
+    private static final long[] RESUME_CHECK_DELAYS_MILLISECONDS = {1500, 3500, 6000};
+
+    /**
+     * A video loaded while the app is in the background starts paused, so it is resumed with a media key.
+     */
+    private static void resumeIfPaused(String videoId) {
+        try {
+            if (!videoId.equals(VideoInformation.getVideoId()) || VideoState.getCurrent() != VideoState.PAUSED) {
+                return;
+            }
+
+            Activity activity = Utils.getActivity();
+            if (activity != null && activity.getWindow().getDecorView().getWindowVisibility() == View.VISIBLE) {
+                return;
+            }
+
+            Context context = Utils.getContext();
+            AudioManager audioManager = context == null ? null : (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            if (audioManager == null) {
+                return;
+            }
+
+            Logger.printDebug(() -> "Resuming paused queued video: " + videoId);
+            audioManager.dispatchMediaKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY));
+            audioManager.dispatchMediaKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY));
+        } catch (Exception ex) {
+            Logger.printException(() -> "resumeIfPaused failure", ex);
         }
     }
 
