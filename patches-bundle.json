@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-10-14T23:52:56",
-  "description": "## [1.48.0-dev.13](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.12...v1.48.0-dev.13) (2026-10-14)\n\n### 🐛 Bug Fixes\n\n* **YouTube - Miniplayer:** Match minimal miniplayer icons by content description name instead of resource id ([4502949](https://github.com/abemurica/morphe-patches/commit/4502949a61f6d5d39f72e4052f083cbe1460bd09))",
-  "download_url": "https://github.com/abemurica/morphe-patches/releases/download/v1.48.0-dev.13/patches-1.48.0-dev.13.mpp",
+  "created_at": "2026-10-15T00:06:00",
+  "description": "## [1.48.0-dev.14](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.13...v1.48.0-dev.14) (2026-10-15)\n\n### 🐛 Bug Fixes\n\n* **YouTube - Add to queue:** Log navigation callers and hand off toasts for the native queue ([dff6925](https://github.com/abemurica/morphe-patches/commit/dff69259df6d878f9d499ee039e4183a56a5f3bc))",
+  "download_url": "https://github.com/abemurica/morphe-patches/releases/download/v1.48.0-dev.14/patches-1.48.0-dev.14.mpp",
   "signature_download_url": "",
-  "version": "1.48.0-dev.13"
+  "version": "1.48.0-dev.14"
 }
