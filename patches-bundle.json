@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-10-15T00:42:26",
-  "description": "## [1.48.0-dev.17](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.16...v1.48.0-dev.17) (2026-10-15)\n\n### 🐛 Bug Fixes\n\n* **YouTube - Add to queue:** Remove the native queue experiment ([3dc026e](https://github.com/abemurica/morphe-patches/commit/3dc026e2a18ff1e87d72a6a6eef49814600de6be))",
-  "download_url": "https://github.com/abemurica/morphe-patches/releases/download/v1.48.0-dev.17/patches-1.48.0-dev.17.mpp",
+  "created_at": "2026-10-15T00:57:13",
+  "description": "## [1.48.0-dev.18](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.17...v1.48.0-dev.18) (2026-10-15)\n\n### 🐛 Bug Fixes\n\n* **YouTube - Add to queue:** Resume a queued video that starts paused in the background ([c1bee94](https://github.com/abemurica/morphe-patches/commit/c1bee94eed95858ea99ce56464c41c472383257a))",
+  "download_url": "https://github.com/abemurica/morphe-patches/releases/download/v1.48.0-dev.18/patches-1.48.0-dev.18.mpp",
   "signature_download_url": "",
-  "version": "1.48.0-dev.17"
+  "version": "1.48.0-dev.18"
 }
