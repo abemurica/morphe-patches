@@ -1089,16 +1089,19 @@ public final class VideoInformation {
      * Injection point. Fixes bad data used by YouTube.
      * Issue can be reproduced by selecting 480p quality on any Short,
      * and occasionally with random regular videos.
+     * <p>
+     * Only the resolution returned by {@link VideoQualityInterface#patch_getResolution()} is fixed.
+     * The quality object keeps the YouTube resolution, because the player and the SABR requests
+     * use it to match the stream formats. With a fixed resolution in the quality object,
+     * some VP9 streams restart in a loop when the quality is set.
      */
-    public static int fixVideoQualityResolution(String name, int quality) {
+    public static int fixVideoQualityResolution(@Nullable String name, int quality) {
         try {
-            if (!name.startsWith(Integer.toString(quality))) {
+            if (name != null && quality != AUTOMATIC_VIDEO_QUALITY_VALUE
+                    && !name.startsWith(Integer.toString(quality))) {
                 final int suffixIndex = name.indexOf('p');
                 if (suffixIndex > 0) {
-                    final int fixedQuality = Integer.parseInt(name.substring(0, suffixIndex));
-                    Logger.printDebug(() -> "Fixing wrong quality resolution from: " +
-                            name + "(" + quality + ") to: " + name + "(" + fixedQuality + ")");
-                    return fixedQuality;
+                    return Integer.parseInt(name.substring(0, suffixIndex));
                 }
             }
         } catch (Exception ex) {
