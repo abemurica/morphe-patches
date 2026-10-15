@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-10-15T01:29:19",
-  "description": "## [1.48.0-dev.20](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.19...v1.48.0-dev.20) (2026-10-15)\n\n### 🐛 Bug Fixes\n\n* **YouTube - Add to queue:** Handle the click of the queue rows when the flyout list is bound ([8aaa8a0](https://github.com/abemurica/morphe-patches/commit/8aaa8a0bc6d274e1c3e4cc3c87cae69497c433f5))\n* **YouTube - Video quality:** Fix VP9 Shorts restarting in a loop with spoofed SABR streams ([ef04cc3](https://github.com/abemurica/morphe-patches/commit/ef04cc3c12131d0667e598a935425143d1a6dcf1))",
-  "download_url": "https://github.com/abemurica/morphe-patches/releases/download/v1.48.0-dev.20/patches-1.48.0-dev.20.mpp",
+  "created_at": "2026-10-15T14:51:14",
+  "description": "## [1.48.0-dev.21](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.20...v1.48.0-dev.21) (2026-10-15)\n\n### 🐛 Bug Fixes\n\n* **YouTube - Add to queue:** Close the queue sheet when the player enters picture-in-picture ([85337b9](https://github.com/abemurica/morphe-patches/commit/85337b9e773f875839683ba1917aef7728be878b))\n* **YouTube - Add to queue:** Do not add the Queue row to the player settings panel ([8e30b64](https://github.com/abemurica/morphe-patches/commit/8e30b6420d86108887cca7184dd9cdce0aca7cd4))",
+  "download_url": "https://github.com/abemurica/morphe-patches/releases/download/v1.48.0-dev.21/patches-1.48.0-dev.21.mpp",
   "signature_download_url": "",
-  "version": "1.48.0-dev.20"
+  "version": "1.48.0-dev.21"
 }
