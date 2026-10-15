@@ -35,7 +35,7 @@ All modifications made by Morphe, along with their dates, can be found in the Gi
 ## 🩹 Patches list
 
 <!-- PATCHES_START -->
-> **[v1.48.0-dev.21](https://github.com/abemurica/morphe-patches/releases/tag/v1.48.0-dev.21)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;180 patches total
+> **[v1.48.0-dev.22](https://github.com/abemurica/morphe-patches/releases/tag/v1.48.0-dev.22)**&nbsp;&nbsp;•&nbsp;&nbsp;`dev`&nbsp;&nbsp;•&nbsp;&nbsp;180 patches total
 <details>
 <summary>📦 YouTube&nbsp;&nbsp;•&nbsp;&nbsp;98 patches</summary>
 <br>
@@ -53,7 +53,7 @@ All modifications made by Morphe, along with their dates, can be found in the Gi
 | [App refresh rate](#app-refresh-rate) | Adds an option to change the app refresh rate. |  |
 | [Bypass image region restrictions](#bypass-image-region-restrictions) | Adds an option to use a different host for user avatar and channel images and can fix missing images that are blocked in some countries. |  |
 | [Bypass link redirects](#bypass-link-redirects) | Adds an option to bypass redirects and open the original link directly. |  |
-| [Captions](#captions) | Adds an option to disable captions from being automatically enabled or to set caption cookies. |  |
+| [Captions](#captions) | Adds options to disable captions from being automatically enabled, select a preferred caption language, and add more auto-translate languages. |  |
 | [Change form factor](#change-form-factor) | Adds an option to change the UI appearance to a phone, tablet, or automotive device. |  |
 | [Change header](#change-header) | Adds an option to change the header logo in the top left corner of the app. | • Custom header logo |
 | [Change start page](#change-start-page) | Adds an option to set which page the app opens in instead of the homepage. |  |

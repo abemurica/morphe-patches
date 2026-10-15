@@ -1,3 +1,16 @@
+## [1.48.0-dev.22](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.21...v1.48.0-dev.22) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **YouTube - Open system share sheet:** Build link from share entity ([#3735](https://github.com/abemurica/morphe-patches/issues/3735)) ([92e9eb9](https://github.com/abemurica/morphe-patches/commit/92e9eb9d0fa941719c6cf7c048dae16ef163812c))
+* **YouTube - VideoInformation:** Videos loaded in the background replace the video and playlist IDs of the player ([0ed3595](https://github.com/abemurica/morphe-patches/commit/0ed35954b6db94a12956c98b8db620e09dc65dd5))
+* **YouTube:** Some external links can not be opened ([128b8d4](https://github.com/abemurica/morphe-patches/commit/128b8d4104e17a5b2527c3f951026f9ff79b4ea6))
+* **YouTube:** Watch page background turns black in light mode ([4667cb0](https://github.com/abemurica/morphe-patches/commit/4667cb0ef1d13ee756c87976801f366869d7144d))
+
+### ✨ New Features
+
+* **YouTube - Captions:** Add additional automatic translation languages ([#3754](https://github.com/abemurica/morphe-patches/issues/3754)) ([c036e5f](https://github.com/abemurica/morphe-patches/commit/c036e5f2e30b467a7c2e3af3ae948c0715efec48))
+
 ## [1.48.0-dev.21](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.20...v1.48.0-dev.21) (2026-10-15)
 
 ### 🐛 Bug Fixes

@@ -1,7 +1,7 @@
 {
-  "created_at": "2026-10-15T14:51:14",
-  "description": "## [1.48.0-dev.21](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.20...v1.48.0-dev.21) (2026-10-15)\n\n### 🐛 Bug Fixes\n\n* **YouTube - Add to queue:** Close the queue sheet when the player enters picture-in-picture ([85337b9](https://github.com/abemurica/morphe-patches/commit/85337b9e773f875839683ba1917aef7728be878b))\n* **YouTube - Add to queue:** Do not add the Queue row to the player settings panel ([8e30b64](https://github.com/abemurica/morphe-patches/commit/8e30b6420d86108887cca7184dd9cdce0aca7cd4))",
-  "download_url": "https://github.com/abemurica/morphe-patches/releases/download/v1.48.0-dev.21/patches-1.48.0-dev.21.mpp",
+  "created_at": "2026-10-15T14:58:00",
+  "description": "## [1.48.0-dev.22](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.21...v1.48.0-dev.22) (2026-10-15)\n\n### 🐛 Bug Fixes\n\n* **YouTube - Open system share sheet:** Build link from share entity ([#3735](https://github.com/abemurica/morphe-patches/issues/3735)) ([92e9eb9](https://github.com/abemurica/morphe-patches/commit/92e9eb9d0fa941719c6cf7c048dae16ef163812c))\n* **YouTube - VideoInformation:** Videos loaded in the background replace the video and playlist IDs of the player ([0ed3595](https://github.com/abemurica/morphe-patches/commit/0ed35954b6db94a12956c98b8db620e09dc65dd5))\n* **YouTube:** Some external links can not be opened ([128b8d4](https://github.com/abemurica/morphe-patches/commit/128b8d4104e17a5b2527c3f951026f9ff79b4ea6))\n* **YouTube:** Watch page background turns black in light mode ([4667cb0](https://github.com/abemurica/morphe-patches/commit/4667cb0ef1d13ee756c87976801f366869d7144d))\n\n### ✨ New Features\n\n* **YouTube - Captions:** Add additional automatic translation languages ([#3754](https://github.com/abemurica/morphe-patches/issues/3754)) ([c036e5f](https://github.com/abemurica/morphe-patches/commit/c036e5f2e30b467a7c2e3af3ae948c0715efec48))",
+  "download_url": "https://github.com/abemurica/morphe-patches/releases/download/v1.48.0-dev.22/patches-1.48.0-dev.22.mpp",
   "signature_download_url": "",
-  "version": "1.48.0-dev.21"
+  "version": "1.48.0-dev.22"
 }

@@ -1,6 +1,6 @@
 {
   "NOTE": "Do NOT manually edit this file. This file is automatically updated when semantic release (release.yml) runs. Manually editing this file can break your releases and break third party tools that use this file.",
-  "version": "1.48.0-dev.21",
+  "version": "1.48.0-dev.22",
   "patches": [
     {
       "name": "AI channel filter",
@@ -642,7 +642,7 @@
     },
     {
       "name": "Captions",
-      "description": "Adds an option to disable captions from being automatically enabled or to set caption cookies.",
+      "description": "Adds options to disable captions from being automatically enabled, select a preferred caption language, and add more auto-translate languages.",
       "default": true,
       "category": null,
       "compatiblePackages": [
