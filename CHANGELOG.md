@@ -1,3 +1,9 @@
+## [1.48.0-dev.19](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.18...v1.48.0-dev.19) (2026-10-15)
+
+### 🐛 Bug Fixes
+
+* **YouTube - Add to queue:** Reset the History menu flag for History list menus ([272c09b](https://github.com/abemurica/morphe-patches/commit/272c09bc03998d2dc60be937a6f2b282331fa32e))
+
 ## [1.48.0-dev.18](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.17...v1.48.0-dev.18) (2026-10-15)
 
 ### 🐛 Bug Fixes
