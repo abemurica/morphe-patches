@@ -229,13 +229,6 @@ public final class LocalQueuePatch {
      */
     public static boolean shouldCancelNavigation(Enum<?> navigationIntent) {
         try {
-            if (navigationIntent != null && isEnabled()) {
-                final String intentName = navigationIntent.name();
-                Utils.showToastShort("Nav " + intentName + " native=" + NativeQueuePatch.isEnabled()
-                        + " queued=" + size());
-                Logger.printDebug(() -> "Navigation " + intentName + " native " + NativeQueuePatch.isEnabled());
-                Logger.printDebug(() -> android.util.Log.getStackTraceString(new Throwable("navigation " + intentName)));
-            }
             if (!isEnabled() || NativeQueuePatch.isEnabled()) {
                 return false;
             }
@@ -314,7 +307,7 @@ public final class LocalQueuePatch {
                 return false;
             }
 
-            if (!canStartPlayback()) {
+            if (!canStartPlayback() && !canDeliverInProcess()) {
                 return false;
             }
 
@@ -354,11 +347,25 @@ public final class LocalQueuePatch {
                 && LoadVideoPatch.isPlayerInterfaceAvailable();
     }
 
+    /**
+     * Android blocks starting an activity from the background, but the running activity can still be handed the intent.
+     */
+    private static boolean canDeliverInProcess() {
+        Activity activity = Utils.getActivity();
+        return activity != null && !activity.isFinishing() && !activity.isDestroyed()
+                && LoadVideoPatch.isPlayerInterfaceAvailable();
+    }
+
     private static boolean startPlayback(String videoId) {
         try {
             if (!canStartPlayback()) {
-                Logger.printDebug(() -> "Cannot start queued video, no active player interface");
-                return false;
+                if (!canDeliverInProcess()) {
+                    Logger.printDebug(() -> "Cannot start queued video, no active player interface");
+                    return false;
+                }
+
+                Logger.printDebug(() -> "Starting queued video in the background: " + videoId);
+                return LoadVideoPatch.deliverVideoIntentInProcess(videoId);
             }
 
             Logger.printDebug(() -> "Starting queued video: " + videoId);
