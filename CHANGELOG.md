@@ -1,3 +1,9 @@
+## [1.48.0-dev.13](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.12...v1.48.0-dev.13) (2026-10-14)
+
+### 🐛 Bug Fixes
+
+* **YouTube - Miniplayer:** Match minimal miniplayer icons by content description name instead of resource id ([4502949](https://github.com/abemurica/morphe-patches/commit/4502949a61f6d5d39f72e4052f083cbe1460bd09))
+
 ## [1.48.0-dev.12](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.11...v1.48.0-dev.12) (2026-10-14)
 
 ### 🐛 Bug Fixes
