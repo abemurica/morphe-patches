@@ -1,3 +1,9 @@
+## [1.48.0-dev.24](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.23...v1.48.0-dev.24) (2026-10-16)
+
+### 🐛 Bug Fixes
+
+* **YouTube - Premium-style queue:** Close the queue sheet before entering picture-in-picture ([64912b9](https://github.com/abemurica/morphe-patches/commit/64912b90df72c0b89a0b9d2251de31a4e1bb5079))
+
 ## [1.48.0-dev.23](https://github.com/abemurica/morphe-patches/compare/v1.48.0-dev.22...v1.48.0-dev.23) (2026-10-16)
 
 ### 🐛 Bug Fixes
